@@ -1,0 +1,14 @@
+# Vivado / xsim scratch
+.Xil/
+xsim.dir/
+*.jou
+*.pb
+xvlog.log
+xelab.log
+vivado*.log
+webtalk*
+*.dcp
+# Icarus
+*.vvp
+# Python
+__pycache__/

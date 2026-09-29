@@ -1,0 +1,26 @@
+{
+ "W": 160,
+ "H": 120,
+ "cases": {
+  "sobel": {
+   "mode": 0,
+   "k": 3,
+   "checksum": 156112
+  },
+  "scharr": {
+   "mode": 0,
+   "k": 5,
+   "checksum": 158612
+  },
+  "gaussian": {
+   "mode": 1,
+   "k": 4,
+   "checksum": 2491069
+  },
+  "laplacian": {
+   "mode": 1,
+   "k": 0,
+   "checksum": 349497
+  }
+ }
+}

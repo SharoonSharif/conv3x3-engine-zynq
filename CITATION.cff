@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use these artifacts, please cite them as below."
+title: "conv3x3-engine-zynq: runtime-programmable 3x3 convolution engine and fixed Sobel core for Zynq-7020 (reconstructed RTL, testbenches, golden model, Vivado reports)"
+type: software
+authors:
+  - family-names: Sharif
+    given-names: Sharoon
+    email: sharoon.sharif@bulldogs.aamu.edu
+    affiliation: "Alabama A&M University"
+version: "0.1.0"
+license: MIT
+repository-code: "https://github.com/SharoonSharif/conv3x3-engine-zynq"
+keywords:
+  - FPGA
+  - Zynq-7000
+  - image processing
+  - Sobel
+  - convolution
+  - AXI4-Stream
+  - Verilog
+# TODO before release: add co-authors, the manuscript as preferred-citation,
+# and the Zenodo DOI once archived.
