@@ -1,0 +1,19 @@
+{
+  "title": "conv3x3-engine-zynq: runtime-programmable 3x3 convolution engine and fixed Sobel core for Zynq-7020",
+  "upload_type": "software",
+  "description": "<p>Artifacts for a runtime-programmable 3x3 convolution engine (AXI4-Stream data path, AXI4-Lite register file with 18 signed 8-bit coefficients) and a fixed Sobel reference core targeting the AMD/Xilinx XC7Z020-1: Verilog RTL, self-checking testbenches with randomized AXI4-Stream backpressure, a fixed-point golden model, Vivado 2026.1 out-of-context scripts, and post-route utilization, timing and power reports at 148.5 MHz for line widths of 160 and 1920 pixels.</p><p><strong>Scope.</strong> The RTL is a reconstruction written from the design description after the original sources were lost. All hardware figures are post-route, out-of-context Vivado results; power is a vectorless estimate; no board-level runtime experiments were executed. At a 1920-pixel line width the engine misses the 148.5 MHz constraint by 86 ps. The BSDS500 edge-quality evaluation code and the DDR bandwidth model are not included. See README.md for details.</p>",
+  "creators": [
+    {"name": "Sharif, Sharoon", "affiliation": "Alabama A&M University"}
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "keywords": [
+    "FPGA",
+    "Zynq-7000",
+    "image processing",
+    "Sobel",
+    "3x3 convolution",
+    "AXI4-Stream",
+    "Verilog"
+  ]
+}
