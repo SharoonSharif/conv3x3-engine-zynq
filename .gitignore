@@ -12,3 +12,6 @@ webtalk*
 *.vvp
 # Python
 __pycache__/
+
+# large generated vectors (regenerate with golden/gen_vectors_wide.py 1920 1080)
+tb/vectors_w1920_h1080/

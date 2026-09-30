@@ -81,3 +81,42 @@ and constraint set on the same host. On 2026-09-29 the W = 160 runs
 reproduced the July 2026 reports exactly. Another OS, tool build or host CPU
 count can shift placement, and with it WNS and the LUT counts, by small
 amounts.
+
+## 5. Implementation at W = 1920 with the ExtraTimingOpt strategy (revised brief, Table IV)
+
+    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs sobel_fixed    1920 1080 11 extratiming
+    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs conv3x3_engine 1920 1080 11 extratiming
+
+Directives: `opt_design -directive Explore`, `place_design -directive
+ExtraTimingOpt`, `phys_opt_design -directive AggressiveExplore`,
+`route_design -directive AggressiveExplore`, then a post-route
+`phys_opt_design -directive AggressiveExplore`. Compare with
+`synth/reports/W1920_extratiming/`:
+
+| Report / field | sobel_fixed | conv3x3_engine |
+|---|---|---|
+| Total LUTs / Logic LUTs / LUTRAMs | 1,531 / 507 / 1,024 | 1,917 / 893 / 1,024 |
+| FFs / BRAM / DSP | 322 / 0 / 0 | 814 / 0 / 18 |
+| WNS / TNS (ns) | 0.290 / 0.000 | 0.066 / 0.000 |
+| Total / Dynamic power (W) | 0.118 / 0.015 | 0.156 / 0.052 |
+
+Other strategy names accepted by the script: `default_flow`, `explore`,
+`netdelay`, `retime` (see the README for their W = 1920 engine results).
+
+## 6. Extended simulation (mid-frame reprogramming, full rate, 1920 wide)
+
+    python golden/gen_vectors_wide.py 1920 16
+    tb\run_xsim_ext.bat
+    python golden/gen_vectors_wide.py 1920 1080
+    tb\run_xsim_1080p.bat
+
+Every log in `tb/logs_ext/` must end in `TB PASS`. Expected throughput lines:
+
+| Run | cycles first-in to last-out per frame |
+|---|---|
+| 160x120, full rate | 19,484 (1.0148 cycles/px) |
+| 1920x16, full rate | 32,660 (1.0632 cycles/px) |
+| 1920x1080, full rate | 2,076,604 (1.0014 cycles/px) |
+
+With random gaps and backpressure the cycle counts are larger and depend on
+the LFSR seeds in the testbench.

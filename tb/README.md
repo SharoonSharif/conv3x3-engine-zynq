@@ -40,6 +40,24 @@ Logs go to `tb/logs/`. Each run must end in `TB PASS`.
 | kernel swap | 76 clock cycles for 19 AXI4-Lite writes |
 | sobel_fixed | 0 mismatches / 19,200 px, TLAST 120/120, **TB PASS** |
 
-**Coverage limit:** simulation is at W = 160, H = 120 only. The W = 1920
-configuration used for the second set of implementation reports has **not**
-been simulated.
+## Extended testbench (`tb_engine_ext.v`)
+
+Frame size is set at compile time (`-d TB_W=... -d TB_H=... -d TB_CW=...`,
+default 160 x 120, CW 9); vectors come from `golden/gen_vectors_wide.py`
+(seeded random image). Plusargs: `+VEC=<dir>`, `+CASE=<kernel>`,
+`+FULLRATE` (TVALID back-to-back, TREADY always high) and `+MIDFRAME`
+(write the new kernel while frame 1 is at input row H/2; frame 1 must stay
+pure Sobel). It reports cycles per frame and input stall cycles.
+
+    tbun_xsim_ext.bat      # 160x120 and 1920x16: 4 kernels mid-frame, plus full-rate runs
+    tbun_xsim_1080p.bat    # 1920x1080, Scharr, full rate + mid-frame
+
+Recorded results (`tb/logs_ext/`, 2026-09-30): all 12 runs **TB PASS**,
+bit-exact. The engine accepts W pixels per W + 1 cycles within a frame and
+needs a (W + 1)-cycle bottom-border flush per frame; a full 1920x1080 frame
+takes 2,076,604 cycles, inside the 2,475,000-cycle 1080p60 frame period at
+148.5 MHz.
+
+Note: the original `tb_engine.v` driver drops TVALID for at least one cycle
+between pixels and programs the kernel only between frames; the extended
+testbench covers full-rate input and mid-frame writes.

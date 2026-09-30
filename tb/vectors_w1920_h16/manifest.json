@@ -1,0 +1,27 @@
+{
+ "W": 1920,
+ "H": 16,
+ "seed": 20260930,
+ "cases": {
+  "sobel": {
+   "mode": 0,
+   "k": 3,
+   "checksum": 1607068
+  },
+  "scharr": {
+   "mode": 0,
+   "k": 5,
+   "checksum": 1783393
+  },
+  "gaussian": {
+   "mode": 1,
+   "k": 4,
+   "checksum": 3934454
+  },
+  "laplacian": {
+   "mode": 1,
+   "k": 0,
+   "checksum": 5808428
+  }
+ }
+}

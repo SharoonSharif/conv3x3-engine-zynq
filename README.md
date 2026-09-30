@@ -1,9 +1,11 @@
 # conv3x3-engine-zynq
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23047577.svg)](https://doi.org/10.5281/zenodo.23047577)
+
 A runtime-programmable 3x3 convolution engine and a fixed Sobel reference
-core for AMD/Xilinx Zynq-7020, with their testbenches, fixed-point golden
-model, Vivado scripts and the implementation reports behind the manuscript's
-resource/timing/power table.
+core for AMD/Xilinx Zynq-7020, with their testbenches, fixed-point reference
+model, Vivado scripts and the implementation reports behind the TCAS-II
+brief's resource/timing/power table.
 
 > **Read before citing any number from this repository.**
 >
@@ -11,9 +13,13 @@ resource/timing/power table.
 >    projects were lost. The files in `rtl/` were written in July 2026 from
 >    the manuscript's own design description (engine microarchitecture,
 >    register map, fixed Sobel core). They are not recovered original code.
-> 2. **The published hardware numbers match a 160-pixel line-buffer build,
->    not 1920.** At a line width of 1920 the engine misses the 148.5 MHz
->    constraint by 86 ps. Both builds are included (see *Results*).
+> 2. **1920-pixel timing closure depends on the implementation directives.**
+>    With default directives the engine misses 148.5 MHz by 86 ps at a line
+>    width of 1920; with the ExtraTimingOpt / AggressiveExplore directives in
+>    `synth/ooc_synth_strategy.tcl` both cores close (engine +0.066 ns). The
+>    revised brief reports that flow. The table in the brief *as first
+>    submitted* matched a 160-pixel build and mis-split its LUTs (see
+>    *History of the reported numbers*).
 > 3. **The BSDS500 evaluation code is not included** and could not be
 >    located; those numbers cannot be reproduced from here (see `eval/`).
 > 4. **No board-level runtime campaigns were executed.** Every hardware
@@ -26,9 +32,9 @@ resource/timing/power table.
 |---|---|
 | Device | XC7Z020-1 (`xc7z020clg400-1`) |
 | Tool | Vivado 2026.1 (build 6511674), free Standard edition |
-| Flow | Out-of-context: `synth_design -mode out_of_context`, `opt_design`, `place_design`, `phys_opt_design`, `route_design` (default directives) |
+| Flow | Out-of-context: `synth_design -mode out_of_context`, `opt_design`, `place_design`, `phys_opt_design`, `route_design`. Default directives (`ooc_synth.tcl`, `ooc_synth_param.tcl`) or a named strategy (`ooc_synth_strategy.tcl`) |
 | Clock | `aclk`, 6.734 ns period (148.5 MHz); 2.0 ns input/output delays (`synth/ooc.xdc`) |
-| Line width | Parameter `W`. RTL default **160** (H = 120, CW = 9). The 1920 build uses W = 1920, H = 1080, CW = 11 (line buffers are `2**CW` deep, so 2048 x 8 each) |
+| Line width | Parameter `W`. RTL default 160 (H = 120, CW = 9). The 1920 builds use W = 1920, H = 1080, CW = 11 (line buffers are `2**CW` deep, so 2048 x 8 each) |
 | Simulator | Vivado xsim 2026.1 (Icarus Verilog also supported) |
 
 ## Layout
@@ -38,10 +44,11 @@ resource/timing/power table.
                             18 DSP48E1, two distributed-RAM line buffers
     rtl/sobel_fixed.v       hardwired Sobel (|Gx|+|Gy|)>>3, same streaming
                             front end, no AXI4-Lite
-    tb/                     self-checking testbenches with random backpressure,
-                            vectors, run script, logs            -> tb/README.md
-    golden/                 fixed-point reference model           -> golden/README.md
-    eval/                   BSDS500 evaluation: NOT INCLUDED       -> eval/README.md
+    tb/                     self-checking testbenches (random backpressure,
+                            full-rate input, mid-frame reprogramming, any W/H),
+                            vectors, run scripts, logs          -> tb/README.md
+    golden/                 fixed-point (integer) reference model -> golden/README.md
+    eval/                   BSDS500 evaluation: NOT INCLUDED      -> eval/README.md
     synth/                  Vivado Tcl + XDC + reports (evidence, not regenerated)
     docs/register_map.md    AXI4-Lite register map and known limitations
     docs/reproduce.md       step-by-step reproduction with expected values
@@ -56,82 +63,98 @@ All values are post-route, out-of-context, from the reports under
 `synth/reports/`. Power figures are Vivado vectorless estimates (default
 switching activity, confidence level "Medium").
 
-| | Sobel, W=160 | Engine, W=160 | Sobel, W=1920 | Engine, W=1920 |
-|---|---|---|---|---|
-| Total LUTs | 575 | 931 | 1,532 | 1,930 |
-| &nbsp;&nbsp;logic | 319 | 675 | 508 | 906 |
-| &nbsp;&nbsp;memory (distributed RAM) | 256 | 256 | 1,024 | 1,024 |
-| &nbsp;&nbsp;shift register | 0 | 0 | 0 | 0 |
-| Flip-flops | 237 | 622 | 322 | 845 |
-| Block RAM tiles | 0 | 0 | 0 | 0 |
-| DSP48E1 | 0 | 18 | 0 | 18 |
-| WNS @ 6.734 ns | +0.629 ns | +0.025 ns | +0.367 ns | **−0.086 ns (fails, 3 endpoints)** |
-| Total / dynamic power | 0.114 / 0.012 W | 0.164 / 0.061 W | 0.118 / 0.015 W | 0.157 / 0.054 W |
-| Reports | `W160_published/` | `W160_published/` | `W1920/` | `W1920/` |
+**Reported in the revised brief (Table IV): W = 1920, ExtraTimingOpt strategy**
+(`synth/reports/W1920_extratiming/`)
 
-The W = 1920 engine's failing paths all run from a line-buffer read
-(`RAMD64E` → `MUXF7`/`MUXF8`) into the multiply stage.
-
-### Relation to the manuscript's table
-
-The W = 160 columns reproduce the manuscript's flip-flop, BRAM, DSP, WNS and
-power figures exactly. The manuscript's LUT figures do **not** match any
-report:
-
-| | Manuscript | Reports (W = 160) |
+| | Sobel (fixed) | Engine |
 |---|---|---|
-| Fixed Sobel | 575 logic + 595 memory = 1,170 | 575 **total** = 319 logic + 256 memory |
-| Engine | 931 logic + 595 memory = 1,526 | 931 **total** = 675 logic + 256 memory |
+| Total LUTs (logic + distributed RAM) | 1,531 (507 + 1,024) | 1,917 (893 + 1,024) |
+| Flip-flops | 322 | 814 |
+| Block RAM tiles / DSP48E1 | 0 / 0 | 0 / 18 |
+| WNS @ 6.734 ns | +0.290 ns | +0.066 ns |
+| Total / dynamic power | 0.118 / 0.015 W | 0.156 / 0.052 W |
 
-The manuscript's "logic" values equal the reports' *total* LUTs, which
-already include the memory LUTs, and the value 595 appears in no report or
-log. The manuscript also states 1920-pixel line buffers, but these reports
-were built at W = 160.
+**All builds**
+
+| Build | Sobel LUT (logic + mem) | Sobel FF | Sobel WNS | Engine LUT (logic + mem) | Engine FF | Engine WNS |
+|---|---|---|---|---|---|---|
+| W = 160, default (`W160_published/`) | 575 (319 + 256) | 237 | +0.629 | 931 (675 + 256) | 622 | +0.025 |
+| W = 1920, default (`W1920_default/`) | 1,532 (508 + 1,024) | 322 | +0.367 | 1,930 (906 + 1,024) | 845 | **−0.086 (fails)** |
+| W = 1920, ExtraTimingOpt (`W1920_extratiming/`) | 1,531 (507 + 1,024) | 322 | +0.290 | 1,917 (893 + 1,024) | 814 | +0.066 |
+
+Other strategies tried for the W = 1920 engine (same RTL; script
+`ooc_synth_strategy.tcl`; reports not archived): `explore` +0.002 ns,
+`netdelay` (ExtraNetDelay_high) +0.015 ns, `retime` (synthesis retiming +
+AlternateFlowWithRetiming) −0.575 ns. With default directives the failing
+paths run from a line-buffer read (`RAMD64E` → `MUXF7`/`MUXF8`) into the
+multiply stage.
+
+### History of the reported numbers
+
+The brief as first submitted (2026-09-29) reported "575 logic + 595 memory =
+1,170" (Sobel) and "931 logic + 595 memory = 1,526" (engine) LUTs for
+1920-pixel lines. Those figures do not match any report: 575 and 931 are the
+*total* LUTs of the W = 160 build (`W160_published/`), which already include
+256 memory LUTs, and the value 595 appears in no report or log. Its FF, DSP,
+WNS and power figures also came from the W = 160 build. The revised brief
+replaces the table with the W = 1920 ExtraTimingOpt results above.
 
 ### Provenance of the reports
 
-* `synth/reports/W160_published/` — the July 2026 reports the manuscript
-  table was drawn from: `sobel_fixed_*` (2026-07-09 10:23) and
-  `conv3x3_engine_*` (2026-07-09 10:44). `rtl/` is byte-identical to the
-  sources of both runs.
-* `synth/reports/W1920/` — produced on 2026-09-29 with
-  `synth/ooc_synth_param.tcl` from the same `rtl/`.
+* `synth/reports/W160_published/` — the July 2026 reports: `sobel_fixed_*`
+  (2026-07-09 10:23) and `conv3x3_engine_*` (2026-07-09 10:44). `rtl/` is
+  byte-identical to the sources of both runs.
+* `synth/reports/W1920_default/` — 2026-09-29, `ooc_synth_param.tcl`.
+* `synth/reports/W1920_extratiming/` — 2026-09-30, `ooc_synth_strategy.tcl
+  ... extratiming`, same `rtl/`.
 * A W = 160 rerun on 2026-09-29 with `ooc_synth_param.tcl` produced reports
   identical to `W160_published/` apart from the date and file name.
 * The build host name is redacted (`<redacted>`) in every report header and
   log. Nothing else has been edited.
+
+## Verification
+
+| Test | Frames | Result |
+|---|---|---|
+| `tb_engine.v`, 4 kernels (Sobel, Scharr k=5, Gaussian single k=4, Laplacian single k=0), random gaps + backpressure, swap between frames | 2 x 160x120 | bit-exact, TB PASS (`tb/logs/`) |
+| `tb_sobel_fixed.v` | 1 x 160x120 | bit-exact, TB PASS |
+| `tb_engine_ext.v`, same 4 kernels, kernel written **mid-frame** | 2 x 160x120 and 2 x 1920x16 | bit-exact; the frame in flight is unaffected (`tb/logs_ext/`) |
+| `tb_engine_ext.v`, **full-rate** input (TVALID back-to-back, TREADY high) | 2 x 160x120, 2 x 1920x16 | bit-exact; W pixels per W+1 cycles within a frame, plus a (W+1)-cycle bottom-border flush |
+| `tb_engine_ext.v`, full-rate + mid-frame, Scharr | 2 x **1920x1080** | bit-exact; 2,076,604 cycles per frame (1080p60 frame period: 2,475,000 cycles at 148.5 MHz) |
+
+Kernel swap (19 AXI4-Lite writes) takes 76 clock cycles in every run.
 
 ## Reproducing
 
 Full details and expected values: `docs/reproduce.md`. From the repository
 root, with Vivado 2026.1's `bin` directory on PATH:
 
-    # 1. Golden model self-check and vector regeneration (Python 3 + NumPy)
+    # 1. Reference model self-check and vector regeneration (Python 3 + NumPy)
     python golden/rtl_model.py
-    python golden/gen_vectors.py          # tb/vectors/ regenerates byte-identically
+    python golden/gen_vectors.py                 # tb/vectors/ regenerates byte-identically
+    python golden/gen_vectors_wide.py 1920 16    # tb/vectors_w1920_h16/
+    python golden/gen_vectors_wide.py 1920 1080  # tb/vectors_w1920_h1080/ (not archived, ~30 MB)
 
     # 2. RTL simulation — every run must print "TB PASS"
-    tb\run_xsim.bat                       # (see tb/README.md for Icarus)
+    tb\run_xsim.bat          # original testbenches, 160x120
+    tb\run_xsim_ext.bat      # mid-frame + full-rate, 160x120 and 1920x16
+    tb\run_xsim_1080p.bat    # one 1920x1080 frame pair
 
-    # 3. Implementation, W = 160 (the manuscript table)
-    vivado -mode batch -source synth/ooc_synth.tcl -tclargs sobel_fixed
-    vivado -mode batch -source synth/ooc_synth.tcl -tclargs conv3x3_engine
-    #    -> <top>_util_impl.rpt, <top>_tim_impl.rpt, <top>_power.rpt
+    # 3. Implementation, W = 1920, strategy used in the revised brief
+    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs sobel_fixed    1920 1080 11 extratiming
+    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs conv3x3_engine 1920 1080 11 extratiming
 
-    # 4. Implementation, W = 1920
-    vivado -mode batch -source synth/ooc_synth_param.tcl -tclargs sobel_fixed    1920 1080 11
+    # 4. Other builds: W = 160 default, W = 1920 default
+    vivado -mode batch -source synth/ooc_synth.tcl       -tclargs conv3x3_engine
     vivado -mode batch -source synth/ooc_synth_param.tcl -tclargs conv3x3_engine 1920 1080 11
-    #    -> <top>_W1920_{util_synth,util_impl,tim_impl,power}.rpt
 
-Each implementation run takes a few minutes. Compare against
-`synth/reports/`. Resource counts come from `report_utilization`: the
-hierarchical `*_util_impl.rpt` gives Total/Logic/LUTRAM/FF/DSP, and
-`*_util_synth.rpt` gives the LUT-as-Logic / LUT-as-Memory breakdown.
+Each default implementation run takes a few minutes; the strategy runs take longer.
+Compare against `synth/reports/`.
 
 ## BSDS500 evaluation protocol
 
 **The code for this evaluation is not in this repository** (see `eval/`).
-The manuscript describes the protocol as follows:
+The brief describes the protocol as follows:
 
 * Data: a **20-image subset** of the BSDS500 test set, with the dataset's
   human ground truth.
@@ -147,10 +170,10 @@ The manuscript describes the protocol as follows:
 
 **These are internal-comparison numbers (fixed point vs. float64 under one
 protocol), not BSDS500 leaderboard results, and they are not comparable
-with published benchmark scores.** The values reported in the manuscript
-are ODS F = 0.619 (P = 0.508, R = 0.793), OIS F = 0.646, Pratt
-0.310 ± 0.111 for fixed point, and 0.618 / 0.648 / 0.309 ± 0.110 for
-float64. They cannot be regenerated from this repository.
+with published benchmark scores.** The values reported are ODS F = 0.619
+(P = 0.508, R = 0.793), OIS F = 0.646, Pratt 0.310 ± 0.111 for fixed point,
+and 0.618 / 0.648 / 0.309 ± 0.110 for float64. They cannot be regenerated
+from this repository.
 
 ## Scope and limitations
 
@@ -159,16 +182,17 @@ float64. They cannot be regenerated from this repository.
   Throughput, latency on hardware, DDR bandwidth and real power are not
   measured anywhere here.
 * **The DDR bandwidth-feasibility model is not included.**
-* **Simulation covers W = 160, H = 120 only.** The W = 1920 build has been
-  implemented but not simulated.
 * **Power is a vectorless estimate**, not a measurement.
-* **The W = 1920 engine does not meet 148.5 MHz** with the default
-  implementation flow.
+* **The W = 1920 engine needs non-default implementation directives** to
+  meet 148.5 MHz.
+* **Single-kernel mode outputs a magnitude**, `clamp(|acc1| >> k)`, so
+  kernels whose response changes sign (Laplacian, sharpening) are rectified.
 * **EN = 0 is sticky until reset** (see `docs/register_map.md`).
 
 ## Citation
 
-See `CITATION.cff`.
+Cite the archive as doi:[10.5281/zenodo.23047577](https://doi.org/10.5281/zenodo.23047577)
+(concept DOI; resolves to the latest version). See `CITATION.cff`.
 
 ## License
 
