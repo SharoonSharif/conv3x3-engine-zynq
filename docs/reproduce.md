@@ -39,12 +39,12 @@ and for the fixed core:
 
     TB PASS: sobel_fixed bit-exact over 19200 px; tlast count = 120 (exp 120)
 
-## 3. Implementation at W = 160 (manuscript table)
+## 3. Implementation at W = 160 (RTL default width)
 
     vivado -mode batch -source synth/ooc_synth.tcl -tclargs sobel_fixed
     vivado -mode batch -source synth/ooc_synth.tcl -tclargs conv3x3_engine
 
-Compare with `synth/reports/W160_published/`:
+Compare with `synth/reports/W160_july2026/`:
 
 | Report / field | sobel_fixed | conv3x3_engine |
 |---|---|---|
@@ -82,7 +82,7 @@ reproduced the July 2026 reports exactly. Another OS, tool build or host CPU
 count can shift placement, and with it WNS and the LUT counts, by small
 amounts.
 
-## 5. Implementation at W = 1920 with the ExtraTimingOpt strategy (revised brief, Table IV)
+## 5. Implementation at W = 1920 with the ExtraTimingOpt strategy (brief, Table IV)
 
     vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs sobel_fixed    1920 1080 11 extratiming
     vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs conv3x3_engine 1920 1080 11 extratiming

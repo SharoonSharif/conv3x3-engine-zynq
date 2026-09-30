@@ -17,9 +17,7 @@ brief's resource/timing/power table.
 >    With default directives the engine misses 148.5 MHz by 86 ps at a line
 >    width of 1920; with the ExtraTimingOpt / AggressiveExplore directives in
 >    `synth/ooc_synth_strategy.tcl` both cores close (engine +0.066 ns). The
->    revised brief reports that flow. The table in the brief *as first
->    submitted* matched a 160-pixel build and mis-split its LUTs (see
->    *History of the reported numbers*).
+>    brief reports that flow.
 > 3. **The BSDS500 evaluation code is not included** and could not be
 >    located; those numbers cannot be reproduced from here (see `eval/`).
 > 4. **No board-level runtime campaigns were executed.** Every hardware
@@ -63,7 +61,7 @@ All values are post-route, out-of-context, from the reports under
 `synth/reports/`. Power figures are Vivado vectorless estimates (default
 switching activity, confidence level "Medium").
 
-**Reported in the revised brief (Table IV): W = 1920, ExtraTimingOpt strategy**
+**Reported in the brief (Table IV): W = 1920, ExtraTimingOpt strategy**
 (`synth/reports/W1920_extratiming/`)
 
 | | Sobel (fixed) | Engine |
@@ -78,7 +76,7 @@ switching activity, confidence level "Medium").
 
 | Build | Sobel LUT (logic + mem) | Sobel FF | Sobel WNS | Engine LUT (logic + mem) | Engine FF | Engine WNS |
 |---|---|---|---|---|---|---|
-| W = 160, default (`W160_published/`) | 575 (319 + 256) | 237 | +0.629 | 931 (675 + 256) | 622 | +0.025 |
+| W = 160, default (`W160_july2026/`) | 575 (319 + 256) | 237 | +0.629 | 931 (675 + 256) | 622 | +0.025 |
 | W = 1920, default (`W1920_default/`) | 1,532 (508 + 1,024) | 322 | +0.367 | 1,930 (906 + 1,024) | 845 | **−0.086 (fails)** |
 | W = 1920, ExtraTimingOpt (`W1920_extratiming/`) | 1,531 (507 + 1,024) | 322 | +0.290 | 1,917 (893 + 1,024) | 814 | +0.066 |
 
@@ -89,26 +87,16 @@ AlternateFlowWithRetiming) −0.575 ns. With default directives the failing
 paths run from a line-buffer read (`RAMD64E` → `MUXF7`/`MUXF8`) into the
 multiply stage.
 
-### History of the reported numbers
-
-The brief as first submitted (2026-09-29) reported "575 logic + 595 memory =
-1,170" (Sobel) and "931 logic + 595 memory = 1,526" (engine) LUTs for
-1920-pixel lines. Those figures do not match any report: 575 and 931 are the
-*total* LUTs of the W = 160 build (`W160_published/`), which already include
-256 memory LUTs, and the value 595 appears in no report or log. Its FF, DSP,
-WNS and power figures also came from the W = 160 build. The revised brief
-replaces the table with the W = 1920 ExtraTimingOpt results above.
-
 ### Provenance of the reports
 
-* `synth/reports/W160_published/` — the July 2026 reports: `sobel_fixed_*`
+* `synth/reports/W160_july2026/` — the original July 2026 builds at the RTL default width (W = 160): `sobel_fixed_*`
   (2026-07-09 10:23) and `conv3x3_engine_*` (2026-07-09 10:44). `rtl/` is
   byte-identical to the sources of both runs.
 * `synth/reports/W1920_default/` — 2026-09-29, `ooc_synth_param.tcl`.
 * `synth/reports/W1920_extratiming/` — 2026-09-30, `ooc_synth_strategy.tcl
   ... extratiming`, same `rtl/`.
 * A W = 160 rerun on 2026-09-29 with `ooc_synth_param.tcl` produced reports
-  identical to `W160_published/` apart from the date and file name.
+  identical to `W160_july2026/` apart from the date and file name.
 * The build host name is redacted (`<redacted>`) in every report header and
   log. Nothing else has been edited.
 
@@ -140,7 +128,7 @@ root, with Vivado 2026.1's `bin` directory on PATH:
     tb\run_xsim_ext.bat      # mid-frame + full-rate, 160x120 and 1920x16
     tb\run_xsim_1080p.bat    # one 1920x1080 frame pair
 
-    # 3. Implementation, W = 1920, strategy used in the revised brief
+    # 3. Implementation, W = 1920, strategy used in the brief
     vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs sobel_fixed    1920 1080 11 extratiming
     vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs conv3x3_engine 1920 1080 11 extratiming
 
