@@ -18,8 +18,9 @@ brief's resource/timing/power table.
 >    width of 1920; with the ExtraTimingOpt / AggressiveExplore directives in
 >    `synth/ooc_synth_strategy.tcl` both cores close (engine +0.066 ns). The
 >    brief reports that flow.
-> 3. **The BSDS500 evaluation code is not included** and could not be
->    located; those numbers cannot be reproduced from here (see `eval/`).
+> 3. **The BSDS500 evaluation was re-implemented** on 2026-09-30 (`eval/`);
+>    the original scripts were lost, and the numbers from earlier drafts are
+>    superseded.
 > 4. **No board-level runtime campaigns were executed.** Every hardware
 >    number here is post-route, out-of-context, from Vivado. Nothing was run
 >    on a Zynq board.
@@ -46,7 +47,8 @@ brief's resource/timing/power table.
                             full-rate input, mid-frame reprogramming, any W/H),
                             vectors, run scripts, logs          -> tb/README.md
     golden/                 fixed-point (integer) reference model -> golden/README.md
-    eval/                   BSDS500 evaluation: NOT INCLUDED      -> eval/README.md
+    model/ddr_model.py      DDR feasibility model: reproduces Tables I and II
+    eval/                   BSDS500 evaluation script + results   -> eval/README.md
     synth/                  Vivado Tcl + XDC + reports (evidence, not regenerated)
     docs/register_map.md    AXI4-Lite register map and known limitations
     docs/reproduce.md       step-by-step reproduction with expected values
@@ -141,16 +143,16 @@ Compare against `synth/reports/`.
 
 ## BSDS500 evaluation protocol
 
-**The code for this evaluation is not in this repository** (see `eval/`).
-The brief describes the protocol as follows:
+Script and results: `eval/` (see `eval/README.md`; BSDS500 itself is
+downloaded separately).
 
-* Data: a **20-image subset** of the BSDS500 test set, with the dataset's
-  human ground truth.
-* The fixed-point pipeline (`>> 3` normalization) is compared with a
-  float64 reference.
-* Edges are thinned by non-maximum suppression and swept over **99
-  thresholds**. ODS and OIS F-measures and Pratt's figure of merit are
-  reported.
+* Data: all **200 images of the BSDS500 test split**, with the dataset's
+  human ground truth (a 20-image subset option is also provided).
+* The fixed-point pipeline (`>> 3` normalization, bit-exact to the RTL) is
+  compared with a float64 reference without truncation or saturation.
+* Edges are thinned by four-direction non-maximum suppression, normalized
+  per image, and swept over **99 thresholds**. ODS and OIS F-measures and
+  Pratt's figure of merit are reported.
 * **Relaxed matching:** a detected edge pixel counts as correct if it lies
   within **0.0075 of the image diagonal** of any ground-truth edge pixel,
   **without a one-to-one correspondence constraint**. This is more lenient
@@ -158,10 +160,12 @@ The brief describes the protocol as follows:
 
 **These are internal-comparison numbers (fixed point vs. float64 under one
 protocol), not BSDS500 leaderboard results, and they are not comparable
-with published benchmark scores.** The values reported are ODS F = 0.619
-(P = 0.508, R = 0.793), OIS F = 0.646, Pratt 0.310 ± 0.111 for fixed point,
-and 0.618 / 0.648 / 0.309 ± 0.110 for float64. They cannot be regenerated
-from this repository.
+with published benchmark scores.**
+
+| 200 test images | ODS F (P, R) | OIS F | Pratt FOM |
+|---|---|---|---|
+| Fixed point | 0.589 (0.476, 0.775) | 0.599 | 0.304 ± 0.108 |
+| Float64 | 0.589 (0.480, 0.761) | 0.600 | 0.291 ± 0.106 |
 
 ## Scope and limitations
 
@@ -169,7 +173,7 @@ from this repository.
   is included, and none of the runtime board-level campaigns were executed.
   Throughput, latency on hardware, DDR bandwidth and real power are not
   measured anywhere here.
-* **The DDR bandwidth-feasibility model is not included.**
+* **The DDR bandwidth-feasibility model** is included as equations only (`model/ddr_model.py` reproduces the brief's Tables I and II); its inputs from the conference system are not re-measured.
 * **Power is a vectorless estimate**, not a measurement.
 * **The W = 1920 engine needs non-default implementation directives** to
   meet 148.5 MHz.

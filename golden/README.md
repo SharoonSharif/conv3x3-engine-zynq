@@ -10,6 +10,6 @@ Python 3 + NumPy. Run from anywhere; paths are resolved relative to this file.
     python golden/gen_vectors.py   # regenerates tb/vectors/ byte-identically
     python golden/rtl_model.py     # prints PASS per case
 
-**Precision:** this model is fixed-point (integer) only. There is **no**
-double-precision edge-magnitude model in this repository; the float64
-comparison reported in the manuscript cannot be regenerated from here.
+**Precision:** this model is fixed-point (integer) and is what the RTL is
+verified against. The float64 edge-magnitude reference used for the BSDS500
+comparison lives in `eval/bsds_eval.py`.

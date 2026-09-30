@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use these artifacts, please cite them as below."
 title: "conv3x3-engine-zynq: runtime-programmable 3x3 convolution engine and fixed Sobel core for Zynq-7020 (reconstructed RTL, testbenches, golden model, Vivado reports)"
 type: software
-abstract: "Reconstructed Verilog RTL, testbenches, fixed-point golden model, and Vivado 2026.1 out-of-context scripts and reports (W = 160 and W = 1920, default and ExtraTimingOpt flows) for a runtime-programmable 3x3 convolution engine and a fixed Sobel core on XC7Z020-1. No board-level runs; BSDS500 evaluation code not included."
+abstract: "Reconstructed Verilog RTL, testbenches, fixed-point golden model, and Vivado 2026.1 out-of-context scripts and reports (W = 160 and W = 1920, default and ExtraTimingOpt flows) for a runtime-programmable 3x3 convolution engine and a fixed Sobel core on XC7Z020-1. BSDS500 fixed-point vs float64 evaluation included. No board-level runs."
 authors:
   - family-names: Sharif
     given-names: Sharoon
