@@ -1,0 +1,38 @@
+#-----------------------------------------------------------
+# xsim v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Wed Sep 30 14:28:44 2026
+# Process ID         : 23004
+# Current directory  : <repo>
+# Command line       : xsim.exe -log tb/logs_ext/w1920_sobel_enpause_fullrate.log -mode tcl -source {xsim.dir/ext1920/xsim_script.tcl}
+# Log file           : <repo>/tb/logs_ext/w1920_sobel_enpause_fullrate.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
+# Platform           : Windows 11
+# Operating System   : 26200
+# Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
+# CPU Frequency      : 3194 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 51299 MB
+# Swap memory        : 25019 MB
+# Total Virtual      : 76318 MB
+# Available Virtual  : 2198 MB
+#-----------------------------------------------------------
+source xsim.dir/ext1920/xsim_script.tcl
+# xsim {ext1920} -testplusarg VEC=tb/vectors_w1920_h16 -testplusarg CASE=sharpen -testplusarg ENPAUSE -testplusarg FULLRATE -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+config: W=1920 H=16 CW=11 case=sharpen fullrate=1 midframe=0 enpause=1
+EN pause: input held for 300 cycles at pixel 8323, then resumed
+coefficient-swap programming: 76 clock cycles (19 AXI4-Lite writes)
+frame1 (Sobel): 0 mismatches / 30720 px
+frame2 (sharpen): 0 mismatches / 30720 px
+throughput frame1: 32968 cycles first-in..last-out for 30720 px (1.0732 cyc/px); input stall cycles total 336
+throughput frame2: 32660 cycles first-in..last-out (1.0632 cyc/px)
+TB PASS: both frames bit-exact; tlast count = 32 (exp 32)
+$finish called at time : 657285 ns : File "<repo>/tb/tb_engine_ext.v" Line 245
+exit
+INFO: [Common 17-206] Exiting xsim at Wed Sep 30 14:28:47 2026...

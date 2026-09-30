@@ -5,11 +5,12 @@ Defines the bit-exact contract implemented by rtl/conv3x3_engine.v and
 rtl/sobel_fixed.v: edge-replicated 3x3 window, signed 8-bit coefficients,
 acc_k = sum(coef_i * pix_i)  (signed, fits 20 bits)
 dual mode:   y = clamp( (|acc_1| + |acc_2|) >> k , 0, 255 )
-single mode: y = clamp(  |acc_1|             >> k , 0, 255 )
+single mode: y = clamp(  |acc_1|             >> k , 0, 255 )   (SIGNED = 0)
+             y = clamp(   acc_1              >> k , 0, 255 )   (SIGNED = 1)
 
 Outputs (in tb/vectors/): image.hex, exp_<case>.hex, cfg_<case>.hex, manifest.
-cfg word layout for $readmemh: [0]=mode (0 dual, 1 single), [1]=k,
-[2..10]=K1 row-major (8-bit two's complement), [11..19]=K2.
+cfg word layout for $readmemh: [0]={bit1 SIGNED, bit0 MODE (0 dual, 1 single)},
+[1]=k, [2..10]=K1 row-major (8-bit two's complement), [11..19]=K2.
 """
 import json
 import os
@@ -45,9 +46,16 @@ def conv3x3_int(y8, K):
             acc += int(K[r][c]) * p[r:r + y8.shape[0], c:c + y8.shape[1]]
     return acc
 
-def engine_golden(y8, K1, K2, mode, k):
-    a1 = np.abs(conv3x3_int(y8, K1))
-    s = a1 if mode == 1 else a1 + np.abs(conv3x3_int(y8, K2))
+def engine_golden(y8, K1, K2, mode, k, signed=0):
+    """dual (mode 0): |acc1| + |acc2|; single (mode 1): |acc1|, or acc1
+    clamped at 0 when signed = 1 (CTRL.SIGNED). Then >> k, saturate to 255."""
+    acc1 = conv3x3_int(y8, K1)
+    if mode == 1 and signed:
+        s = np.maximum(acc1, 0)
+    elif mode == 1:
+        s = np.abs(acc1)
+    else:
+        s = np.abs(acc1) + np.abs(conv3x3_int(y8, K2))
     return np.clip(s >> k, 0, 255).astype(np.uint8)
 
 SOBEL_GX = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
@@ -58,6 +66,10 @@ CASES = {
                       K2=[[-3, -10, -3], [0, 0, 0], [3, 10, 3]], mode=0, k=5),
     "gaussian":  dict(K1=[[1, 2, 1], [2, 4, 2], [1, 2, 1]], K2=SOBEL_GY, mode=1, k=4),
     "laplacian": dict(K1=[[0, 1, 0], [1, -4, 1], [0, 1, 0]], K2=SOBEL_GY, mode=1, k=0),
+    "prewitt":   dict(K1=[[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]],
+                      K2=[[-1, -1, -1], [0, 0, 0], [1, 1, 1]], mode=0, k=3),
+    "sharpen":   dict(K1=[[0, -1, 0], [-1, 5, -1], [0, -1, 0]], K2=SOBEL_GY,
+                      mode=1, k=0, signed=1),
 }
 
 def w8(v):  # 8-bit two's complement hex
@@ -68,18 +80,21 @@ with open(os.path.join(OUT, "image.hex"), "w") as f:
 
 manifest = {"W": W, "H": H, "cases": {}}
 for name, c in CASES.items():
-    exp = engine_golden(img, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"])
+    sg = c.get("signed", 0)
+    exp = engine_golden(img, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"], sg)
     with open(os.path.join(OUT, f"exp_{name}.hex"), "w") as f:
         f.write("\n".join(f"{v:02x}" for v in exp.flatten()) + "\n")
-    cfg = [c["mode"], c["k"]] + [x for r in c["K1"] for x in r] + [x for r in c["K2"] for x in r]
+    cfg = [c["mode"] | (sg << 1), c["k"]] + [x for r in c["K1"] for x in r] + [x for r in c["K2"] for x in r]
     with open(os.path.join(OUT, f"cfg_{name}.hex"), "w") as f:
         f.write("\n".join(w8(v) for v in cfg) + "\n")
     manifest["cases"][name] = {"mode": c["mode"], "k": c["k"],
                                "checksum": int(exp.astype(np.uint64).sum())}
-    # self-consistency: recompute independently via float64 path where exact
-    a1 = np.abs(conv3x3_int(img, np.array(c["K1"])))
+    if sg:
+        manifest["cases"][name]["signed"] = 1
+    # self-consistency: recompute independently with a direct formula
+    acc1 = conv3x3_int(img, np.array(c["K1"]))
     a2 = np.abs(conv3x3_int(img, np.array(c["K2"])))
-    s = a1 if c["mode"] == 1 else a1 + a2
+    s = (np.maximum(acc1, 0) if sg else np.abs(acc1)) if c["mode"] == 1 else np.abs(acc1) + a2
     assert np.array_equal(exp, np.clip(s >> c["k"], 0, 255).astype(np.uint8))
 
 with open(os.path.join(OUT, "manifest.json"), "w") as f:

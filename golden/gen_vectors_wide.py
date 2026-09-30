@@ -34,15 +34,18 @@ with open(os.path.join(OUT, "image.hex"), "w", newline="\n") as f:
 
 manifest = {"W": W, "H": H, "seed": SEED, "cases": {}}
 for name, c in CASES.items():
-    exp = engine_golden(img, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"])
+    sg = c.get("signed", 0)
+    exp = engine_golden(img, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"], sg)
     with open(os.path.join(OUT, f"exp_{name}.hex"), "w", newline="\n") as f:
         f.write("\n".join(f"{v:02x}" for v in exp.ravel()) + "\n")
-    cfg = [c["mode"], c["k"]] + [x for r in c["K1"] for x in r] \
+    cfg = [c["mode"] | (sg << 1), c["k"]] + [x for r in c["K1"] for x in r] \
                               + [x for r in c["K2"] for x in r]
     with open(os.path.join(OUT, f"cfg_{name}.hex"), "w", newline="\n") as f:
         f.write("\n".join(w8(v) for v in cfg) + "\n")
     manifest["cases"][name] = {"mode": c["mode"], "k": c["k"],
                                "checksum": int(exp.astype(np.uint64).sum())}
+    if sg:
+        manifest["cases"][name]["signed"] = 1
 with open(os.path.join(OUT, "manifest.json"), "w", newline="\n") as f:
     json.dump(manifest, f, indent=1)
 print(f"vectors written to {os.path.normpath(OUT)} ({W}x{H}, seed {SEED})")

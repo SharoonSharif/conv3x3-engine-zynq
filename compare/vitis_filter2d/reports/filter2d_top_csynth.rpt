@@ -1,0 +1,203 @@
+
+
+================================================================
+== Vitis HLS Report for 'filter2d_top'
+================================================================
+* Date:           Wed Sep 30 14:28:21 2026
+
+* Version:        2026.1 (Build 6493734 on Jun 16 2026)
+* Project:        hls_prj
+* Solution:       sol (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  6.73 ns|  4.916 ns|     1.82 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+-----------+-----+---------+----------+
+    |  Latency (cycles) |  Latency (absolute)  |    Interval   | Pipeline |
+    |   min   |   max   |    min   |    max    | min |   max   |   Type   |
+    +---------+---------+----------+-----------+-----+---------+----------+
+    |      173|  2108184|  1.165 us|  14.197 ms|  162|  2108173|  dataflow|
+    +---------+---------+----------+-----------+-----+---------+----------+
+
+    + Detail: 
+        * Instance: 
+        +---------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+---------+-----------------------------------------+
+        |                                       |                                      |  Latency (cycles) |   Latency (absolute)  |    Interval   |                 Pipeline                |
+        |                Instance               |                Module                |   min   |   max   |    min    |    max    | min |   max   |                   Type                  |
+        +---------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+---------+-----------------------------------------+
+        |entry_proc_U0                          |entry_proc                            |        0|        0|       0 ns|       0 ns|    0|        0|                                       no|
+        |Loop_VITIS_LOOP_25_1_proc_U0           |Loop_VITIS_LOOP_25_1_proc             |       11|       11|  74.074 ns|  74.074 ns|    9|        9|  loop auto-rewind stp (delay=0 cycle(s))|
+        |AXIvideo2xfMat_8_0_1080_1920_1_2_U0    |AXIvideo2xfMat_8_0_1080_1920_1_2_s    |       16|  2084407|   0.108 us|  14.036 ms|   16|  2084407|                                       no|
+        |filter2D_0_3_3_0_0_1080_1920_1_2_2_U0  |filter2D_0_3_3_0_0_1080_1920_1_2_2_s  |      161|  2108172|   1.084 us|  14.196 ms|  161|  2108172|                                       no|
+        |xfMat2AXIvideo_8_0_1080_1920_1_2_0_U0  |xfMat2AXIvideo_8_0_1080_1920_1_2_0_s  |        9|  2080082|  60.606 ns|  14.007 ms|    9|  2080082|                                       no|
+        +---------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+---------+-----------------------------------------+
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|     16|    -|
+|FIFO             |        -|    -|     693|    476|    -|
+|Instance         |        3|    9|    2630|   2533|    0|
+|Memory           |        0|    -|      32|      5|    0|
+|Multiplexer      |        -|    -|       0|     27|    -|
+|Register         |        -|    -|       3|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        3|    9|    3358|   3057|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        1|    4|       3|      5|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +---------------------------------------+--------------------------------------+---------+----+------+------+-----+
+    |                Instance               |                Module                | BRAM_18K| DSP|  FF  |  LUT | URAM|
+    +---------------------------------------+--------------------------------------+---------+----+------+------+-----+
+    |AXIvideo2xfMat_8_0_1080_1920_1_2_U0    |AXIvideo2xfMat_8_0_1080_1920_1_2_s    |        0|   0|    92|   384|    0|
+    |Loop_VITIS_LOOP_25_1_proc_U0           |Loop_VITIS_LOOP_25_1_proc             |        0|   0|    12|    59|    0|
+    |control_s_axi_U                        |control_s_axi                         |        0|   0|   238|   257|    0|
+    |entry_proc_U0                          |entry_proc                            |        0|   0|     2|    20|    0|
+    |filter2D_0_3_3_0_0_1080_1920_1_2_2_U0  |filter2D_0_3_3_0_0_1080_1920_1_2_2_s  |        3|   9|  2191|  1545|    0|
+    |xfMat2AXIvideo_8_0_1080_1920_1_2_0_U0  |xfMat2AXIvideo_8_0_1080_1920_1_2_0_s  |        0|   0|    95|   268|    0|
+    +---------------------------------------+--------------------------------------+---------+----+------+------+-----+
+    |Total                                  |                                      |        3|   9|  2630|  2533|    0|
+    +---------------------------------------+--------------------------------------+---------+----+------+------+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    +---------+---------------------+---------+----+----+-----+------+-----+------+-------------+
+    |  Memory |        Module       | BRAM_18K| FF | LUT| URAM| Words| Bits| Banks| W*Bits*Banks|
+    +---------+---------------------+---------+----+----+-----+------+-----+------+-------------+
+    |lcoef_U  |lcoef_RAM_AUTO_1R1W  |        0|  32|   5|    0|     9|   16|     1|          144|
+    +---------+---------------------+---------+----+----+-----+------+-----+------+-------------+
+    |Total    |                     |        0|  32|   5|    0|     9|   16|     1|          144|
+    +---------+---------------------+---------+----+----+-----+------+-----+------+-------------+
+
+    * FIFO: 
+    +------------+---------+----+----+-----+------+-----+---------+
+    |    Name    | BRAM_18K| FF | LUT| URAM| Depth| Bits| Size:D*B|
+    +------------+---------+----+----+-----+------+-----+---------+
+    |cols_c4_U   |        0|  99|  68|    0|     2|   32|       64|
+    |cols_c_U    |        0|  99|  68|    0|     2|   32|       64|
+    |dst_data_U  |        0|  99|  68|    0|     2|    8|       16|
+    |rows_c3_U   |        0|  99|  68|    0|     2|   32|       64|
+    |rows_c_U    |        0|  99|  68|    0|     2|   32|       64|
+    |shift_c_U   |        0|  99|  68|    0|     3|    8|       24|
+    |src_data_U  |        0|  99|  68|    0|     2|    8|       16|
+    +------------+---------+----+----+-----+------+-----+---------+
+    |Total       |        0| 693| 476|    0|    15|  152|      312|
+    +------------+---------+----+----+-----+------+-----+---------+
+
+    * Expression: 
+    +------------------------------------------------------+----------+----+---+----+------------+------------+
+    |                     Variable Name                    | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +------------------------------------------------------+----------+----+---+----+------------+------------+
+    |AXIvideo2xfMat_8_0_1080_1920_1_2_U0_ap_start          |       and|   0|  0|   2|           1|           1|
+    |Loop_VITIS_LOOP_25_1_proc_U0_ap_start                 |       and|   0|  0|   2|           1|           1|
+    |ap_idle                                               |       and|   0|  0|   2|           1|           1|
+    |ap_sync_ready                                         |       and|   0|  0|   2|           1|           1|
+    |entry_proc_U0_ap_start                                |       and|   0|  0|   2|           1|           1|
+    |ap_sync_AXIvideo2xfMat_8_0_1080_1920_1_2_U0_ap_ready  |        or|   0|  0|   2|           1|           1|
+    |ap_sync_Loop_VITIS_LOOP_25_1_proc_U0_ap_ready         |        or|   0|  0|   2|           1|           1|
+    |ap_sync_entry_proc_U0_ap_ready                        |        or|   0|  0|   2|           1|           1|
+    +------------------------------------------------------+----------+----+---+----+------------+------------+
+    |Total                                                 |          |   0|  0|  16|           8|           8|
+    +------------------------------------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +----------------------------------------------------------+----+-----------+-----+-----------+
+    |                           Name                           | LUT| Input Size| Bits| Total Bits|
+    +----------------------------------------------------------+----+-----------+-----+-----------+
+    |ap_sync_reg_AXIvideo2xfMat_8_0_1080_1920_1_2_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_Loop_VITIS_LOOP_25_1_proc_U0_ap_ready         |   9|          2|    1|          2|
+    |ap_sync_reg_entry_proc_U0_ap_ready                        |   9|          2|    1|          2|
+    +----------------------------------------------------------+----+-----------+-----+-----------+
+    |Total                                                     |  27|          6|    3|          6|
+    +----------------------------------------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +----------------------------------------------------------+---+----+-----+-----------+
+    |                           Name                           | FF| LUT| Bits| Const Bits|
+    +----------------------------------------------------------+---+----+-----+-----------+
+    |ap_sync_reg_AXIvideo2xfMat_8_0_1080_1920_1_2_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_Loop_VITIS_LOOP_25_1_proc_U0_ap_ready         |  1|   0|    1|          0|
+    |ap_sync_reg_entry_proc_U0_ap_ready                        |  1|   0|    1|          0|
+    +----------------------------------------------------------+---+----+-----+-----------+
+    |Total                                                     |  3|   0|    3|          0|
+    +----------------------------------------------------------+---+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-----------------------+-----+-----+------------+-----------------+--------------+
+|       RTL Ports       | Dir | Bits|  Protocol  |  Source Object  |    C Type    |
++-----------------------+-----+-----+------------+-----------------+--------------+
+|s_axi_control_AWVALID  |   in|    1|       s_axi|          control|        scalar|
+|s_axi_control_AWREADY  |  out|    1|       s_axi|          control|        scalar|
+|s_axi_control_AWADDR   |   in|    7|       s_axi|          control|        scalar|
+|s_axi_control_WVALID   |   in|    1|       s_axi|          control|        scalar|
+|s_axi_control_WREADY   |  out|    1|       s_axi|          control|        scalar|
+|s_axi_control_WDATA    |   in|   32|       s_axi|          control|        scalar|
+|s_axi_control_WSTRB    |   in|    4|       s_axi|          control|        scalar|
+|s_axi_control_ARVALID  |   in|    1|       s_axi|          control|        scalar|
+|s_axi_control_ARREADY  |  out|    1|       s_axi|          control|        scalar|
+|s_axi_control_ARADDR   |   in|    7|       s_axi|          control|        scalar|
+|s_axi_control_RVALID   |  out|    1|       s_axi|          control|        scalar|
+|s_axi_control_RREADY   |   in|    1|       s_axi|          control|        scalar|
+|s_axi_control_RDATA    |  out|   32|       s_axi|          control|        scalar|
+|s_axi_control_RRESP    |  out|    2|       s_axi|          control|        scalar|
+|s_axi_control_BVALID   |  out|    1|       s_axi|          control|        scalar|
+|s_axi_control_BREADY   |   in|    1|       s_axi|          control|        scalar|
+|s_axi_control_BRESP    |  out|    2|       s_axi|          control|        scalar|
+|ap_clk                 |   in|    1|  ap_ctrl_hs|     filter2d_top|  return value|
+|ap_rst_n               |   in|    1|  ap_ctrl_hs|     filter2d_top|  return value|
+|interrupt              |  out|    1|  ap_ctrl_hs|     filter2d_top|  return value|
+|s_axis_TDATA           |   in|    8|        axis|  s_axis_V_data_V|       pointer|
+|s_axis_TKEEP           |   in|    1|        axis|  s_axis_V_keep_V|       pointer|
+|s_axis_TSTRB           |   in|    1|        axis|  s_axis_V_strb_V|       pointer|
+|s_axis_TUSER           |   in|    1|        axis|  s_axis_V_user_V|       pointer|
+|s_axis_TLAST           |   in|    1|        axis|  s_axis_V_last_V|       pointer|
+|s_axis_TID             |   in|    1|        axis|    s_axis_V_id_V|       pointer|
+|s_axis_TDEST           |   in|    1|        axis|  s_axis_V_dest_V|       pointer|
+|s_axis_TVALID          |   in|    1|        axis|  s_axis_V_dest_V|       pointer|
+|s_axis_TREADY          |  out|    1|        axis|  s_axis_V_dest_V|       pointer|
+|m_axis_TDATA           |  out|    8|        axis|  m_axis_V_data_V|       pointer|
+|m_axis_TKEEP           |  out|    1|        axis|  m_axis_V_keep_V|       pointer|
+|m_axis_TSTRB           |  out|    1|        axis|  m_axis_V_strb_V|       pointer|
+|m_axis_TUSER           |  out|    1|        axis|  m_axis_V_user_V|       pointer|
+|m_axis_TLAST           |  out|    1|        axis|  m_axis_V_last_V|       pointer|
+|m_axis_TID             |  out|    1|        axis|    m_axis_V_id_V|       pointer|
+|m_axis_TDEST           |  out|    1|        axis|  m_axis_V_dest_V|       pointer|
+|m_axis_TVALID          |  out|    1|        axis|  m_axis_V_dest_V|       pointer|
+|m_axis_TREADY          |   in|    1|        axis|  m_axis_V_dest_V|       pointer|
++-----------------------+-----+-----+------------+-----------------+--------------+
+

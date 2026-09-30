@@ -3,35 +3,32 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23047577.svg)](https://doi.org/10.5281/zenodo.23047577)
 
 A runtime-programmable 3x3 convolution engine and a fixed Sobel reference
-core for AMD/Xilinx Zynq-7020, with their testbenches, fixed-point reference
-model, Vivado scripts and the implementation reports behind the TCAS-II
-brief's resource/timing/power table.
+core for AMD/Xilinx Zynq-7020, with testbenches, a fixed-point reference
+model, Vivado scripts and reports, a Vitis Vision `filter2D` baseline, the
+BSDS500 evaluation, and the DDR feasibility-model script behind the TCAS-II
+brief.
 
 > **Read before citing any number from this repository.**
 >
 > 1. **This RTL is a reconstruction.** The original design sources and Vivado
 >    projects were lost. The files in `rtl/` were written in July 2026 from
->    the manuscript's own design description (engine microarchitecture,
->    register map, fixed Sobel core). They are not recovered original code.
-> 2. **1920-pixel timing closure depends on the implementation directives.**
->    With default directives the engine misses 148.5 MHz by 86 ps at a line
->    width of 1920; with the ExtraTimingOpt / AggressiveExplore directives in
->    `synth/ooc_synth_strategy.tcl` both cores close (engine +0.066 ns). The
->    brief reports that flow.
+>    the manuscript's own design description and revised on 2026-09-30
+>    (signed single-kernel mode, immediate EN, one timing register). They are
+>    not recovered original code.
+> 2. **No board-level runtime campaigns were executed.** Every hardware
+>    number here is post-route, out-of-context, from Vivado; power is a
+>    vectorless estimate. Nothing was run on a Zynq board.
 > 3. **The BSDS500 evaluation was re-implemented** on 2026-09-30 (`eval/`);
 >    the original scripts were lost, and the numbers from earlier drafts are
 >    superseded.
-> 4. **No board-level runtime campaigns were executed.** Every hardware
->    number here is post-route, out-of-context, from Vivado. Nothing was run
->    on a Zynq board.
 
 ## Target and tools
 
 | | |
 |---|---|
 | Device | XC7Z020-1 (`xc7z020clg400-1`) |
-| Tool | Vivado 2026.1 (build 6511674), free Standard edition |
-| Flow | Out-of-context: `synth_design -mode out_of_context`, `opt_design`, `place_design`, `phys_opt_design`, `route_design`. Default directives (`ooc_synth.tcl`, `ooc_synth_param.tcl`) or a named strategy (`ooc_synth_strategy.tcl`) |
+| Tools | Vivado 2026.1 (build 6511674), Vitis HLS 2026.1; free Standard edition |
+| Flow | Out-of-context: `synth_design -mode out_of_context`, `opt_design`, `place_design`, `phys_opt_design`, `route_design`, **default directives** (`synth/ooc_synth.tcl`, `synth/ooc_synth_param.tcl`). `synth/ooc_synth_strategy.tcl` runs named directive sets |
 | Clock | `aclk`, 6.734 ns period (148.5 MHz); 2.0 ns input/output delays (`synth/ooc.xdc`) |
 | Line width | Parameter `W`. RTL default 160 (H = 120, CW = 9). The 1920 builds use W = 1920, H = 1080, CW = 11 (line buffers are `2**CW` deep, so 2048 x 8 each) |
 | Simulator | Vivado xsim 2026.1 (Icarus Verilog also supported) |
@@ -44,13 +41,14 @@ brief's resource/timing/power table.
     rtl/sobel_fixed.v       hardwired Sobel (|Gx|+|Gy|)>>3, same streaming
                             front end, no AXI4-Lite
     tb/                     self-checking testbenches (random backpressure,
-                            full-rate input, mid-frame reprogramming, any W/H),
-                            vectors, run scripts, logs          -> tb/README.md
+                            full-rate input, mid-frame reprogramming, EN pause,
+                            any W/H), vectors, run scripts, logs  -> tb/README.md
     golden/                 fixed-point (integer) reference model -> golden/README.md
+    compare/vitis_filter2d/ Vitis Vision filter2D baseline (HLS)  -> its README.md
     model/ddr_model.py      DDR feasibility model: reproduces Tables I and II
     eval/                   BSDS500 evaluation script + results   -> eval/README.md
     synth/                  Vivado Tcl + XDC + reports (evidence, not regenerated)
-    docs/register_map.md    AXI4-Lite register map and known limitations
+    docs/register_map.md    AXI4-Lite register map
     docs/reproduce.md       step-by-step reproduction with expected values
 
 There are no separate `line_buffer.v` or `axi_lite_regs.v` modules. The line
@@ -59,60 +57,51 @@ buffers (`lb1`, `lb2`) and the AXI4-Lite register file are inside
 
 ## Results
 
-All values are post-route, out-of-context, from the reports under
-`synth/reports/`. Power figures are Vivado vectorless estimates (default
-switching activity, confidence level "Medium").
+Post-route, out-of-context, default directives, from
+`synth/reports/current/` and `compare/vitis_filter2d/reports/`. Power
+figures are Vivado vectorless estimates (confidence level "Medium").
 
-**Reported in the brief (Table IV): W = 1920, ExtraTimingOpt strategy**
-(`synth/reports/W1920_extratiming/`)
+**Brief, Table IV: W = 1920**
 
-| | Sobel (fixed) | Engine |
-|---|---|---|
-| Total LUTs (logic + distributed RAM) | 1,531 (507 + 1,024) | 1,917 (893 + 1,024) |
-| Flip-flops | 322 | 814 |
-| Block RAM tiles / DSP48E1 | 0 / 0 | 0 / 18 |
-| WNS @ 6.734 ns | +0.290 ns | +0.066 ns |
-| Total / dynamic power | 0.118 / 0.015 W | 0.156 / 0.052 W |
-
-**All builds**
-
-| Build | Sobel LUT (logic + mem) | Sobel FF | Sobel WNS | Engine LUT (logic + mem) | Engine FF | Engine WNS |
+| | LUT (logic + mem) | FF | BRAM tiles | DSP | WNS @ 6.734 ns | Power total / dyn |
 |---|---|---|---|---|---|---|
-| W = 160, default (`W160_july2026/`) | 575 (319 + 256) | 237 | +0.629 | 931 (675 + 256) | 622 | +0.025 |
-| W = 1920, default (`W1920_default/`) | 1,532 (508 + 1,024) | 322 | +0.367 | 1,930 (906 + 1,024) | 845 | **−0.086 (fails)** |
-| W = 1920, ExtraTimingOpt (`W1920_extratiming/`) | 1,531 (507 + 1,024) | 322 | +0.290 | 1,917 (893 + 1,024) | 814 | +0.066 |
+| Sobel (fixed) | 1,532 (508 + 1,024) | 322 | 0 | 0 | +0.367 ns | 0.118 / 0.015 W |
+| Programmable engine | 1,916 (892 + 1,024) | 816 | 0 | 18 | +0.076 ns | 0.156 / 0.053 W |
+| Vitis Vision `filter2D`, 1 kernel | 956 (874 + 82) | 1,392 | 1.5 | 9 | +0.427 ns | 0.131 / 0.028 W |
 
-Other strategies tried for the W = 1920 engine (same RTL; script
-`ooc_synth_strategy.tcl`; reports not archived): `explore` +0.002 ns,
-`netdelay` (ExtraNetDelay_high) +0.015 ns, `retime` (synthesis retiming +
-AlternateFlowWithRetiming) −0.575 ns. With default directives the failing
-paths run from a line-buffer read (`RAMD64E` → `MUXF7`/`MUXF8`) into the
-multiply stage.
+**W = 160 (RTL default width)**: Sobel 575 LUT (319 + 256), 237 FF, +0.629 ns;
+engine 953 LUT (697 + 256), 636 FF, 18 DSP, +0.064 ns.
 
 ### Provenance of the reports
 
-* `synth/reports/W160_july2026/` — the original July 2026 builds at the RTL default width (W = 160): `sobel_fixed_*`
-  (2026-07-09 10:23) and `conv3x3_engine_*` (2026-07-09 10:44). `rtl/` is
-  byte-identical to the sources of both runs.
-* `synth/reports/W1920_default/` — 2026-09-29, `ooc_synth_param.tcl`.
-* `synth/reports/W1920_extratiming/` — 2026-09-30, `ooc_synth_strategy.tcl
-  ... extratiming`, same `rtl/`.
-* A W = 160 rerun on 2026-09-29 with `ooc_synth_param.tcl` produced reports
-  identical to `W160_july2026/` apart from the date and file name.
+* `synth/reports/current/` — reports for the RTL in this commit.
+  `conv3x3_engine_W*` from 2026-09-30; `sobel_fixed_W1920_*` from
+  2026-09-29; `sobel_fixed_*` (W = 160) from 2026-07-09. `sobel_fixed.v` has
+  not changed since July, so the older fixed-core reports still apply.
+* `synth/reports/history/` — engine reports for the RTL of release v1.1.0
+  and earlier (before the SIGNED/EN/`lrep` change). At W = 1920 that RTL
+  failed timing with default directives (−0.086 ns) and closed only with
+  the ExtraTimingOpt directive set (+0.066 ns). Registering the left-border
+  flag `lrep` removed the critical compare from the window-mux → DSP path,
+  so the current RTL closes with default directives.
+* `compare/vitis_filter2d/reports/` — Vitis HLS csynth report and Vivado
+  implementation reports for the baseline, both flows.
 * The build host name is redacted (`<redacted>`) in every report header and
   log. Nothing else has been edited.
 
-## Verification
+## Verification (`tb/logs/`, `tb/logs_ext/`; 25 runs, all TB PASS)
 
 | Test | Frames | Result |
 |---|---|---|
-| `tb_engine.v`, 4 kernels (Sobel, Scharr k=5, Gaussian single k=4, Laplacian single k=0), random gaps + backpressure, swap between frames | 2 x 160x120 | bit-exact, TB PASS (`tb/logs/`) |
-| `tb_sobel_fixed.v` | 1 x 160x120 | bit-exact, TB PASS |
-| `tb_engine_ext.v`, same 4 kernels, kernel written **mid-frame** | 2 x 160x120 and 2 x 1920x16 | bit-exact; the frame in flight is unaffected (`tb/logs_ext/`) |
+| `tb_engine.v`, 6 kernels: Sobel, Scharr (k=5), Prewitt (k=3), Gaussian (single, k=4), Laplacian (single, k=0), sharpen (single **signed**, k=0); random gaps + backpressure | 2 x 160x120 | bit-exact |
+| `tb_sobel_fixed.v` | 1 x 160x120 | bit-exact |
+| `tb_engine_ext.v`, same 6 kernels, kernel written **mid-frame** | 2 x 160x120 and 2 x 1920x16 | bit-exact; the frame in flight is unaffected |
 | `tb_engine_ext.v`, **full-rate** input (TVALID back-to-back, TREADY high) | 2 x 160x120, 2 x 1920x16 | bit-exact; W pixels per W+1 cycles within a frame, plus a (W+1)-cycle bottom-border flush |
-| `tb_engine_ext.v`, full-rate + mid-frame, Scharr | 2 x **1920x1080** | bit-exact; 2,076,604 cycles per frame (1080p60 frame period: 2,475,000 cycles at 148.5 MHz) |
+| `tb_engine_ext.v`, full rate + mid-frame, Scharr | 2 x **1920x1080** | bit-exact; 2,076,604 cycles per frame (1080p60 frame period: 2,475,000 cycles at 148.5 MHz) |
+| `tb_engine_ext.v`, **EN pause**: CTRL.EN = 0 mid-frame for 300 cycles, then 1 | 160x120; 1920x16 at full rate | no input accepted while paused; both frames bit-exact |
+| `compare/vitis_filter2d` C simulation vs the engine's signed single-kernel output | 160x120 | 0 mismatches on all interior pixels (borders differ by design) |
 
-Kernel swap (19 AXI4-Lite writes) takes 76 clock cycles in every run.
+A kernel swap (19 AXI4-Lite writes) takes 76 clock cycles in every run.
 
 ## Reproducing
 
@@ -121,25 +110,25 @@ root, with Vivado 2026.1's `bin` directory on PATH:
 
     # 1. Reference model self-check and vector regeneration (Python 3 + NumPy)
     python golden/rtl_model.py
-    python golden/gen_vectors.py                 # tb/vectors/ regenerates byte-identically
+    python golden/gen_vectors.py                 # tb/vectors/
     python golden/gen_vectors_wide.py 1920 16    # tb/vectors_w1920_h16/
     python golden/gen_vectors_wide.py 1920 1080  # tb/vectors_w1920_h1080/ (not archived, ~30 MB)
 
     # 2. RTL simulation — every run must print "TB PASS"
-    tb\run_xsim.bat          # original testbenches, 160x120
-    tb\run_xsim_ext.bat      # mid-frame + full-rate, 160x120 and 1920x16
+    tb\run_xsim.bat          # original testbenches, 160x120, 6 kernels
+    tb\run_xsim_ext.bat      # mid-frame, full rate, EN pause; 160x120 and 1920x16
     tb\run_xsim_1080p.bat    # one 1920x1080 frame pair
 
-    # 3. Implementation, W = 1920, strategy used in the brief
-    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs sobel_fixed    1920 1080 11 extratiming
-    vivado -mode batch -source synth/ooc_synth_strategy.tcl -tclargs conv3x3_engine 1920 1080 11 extratiming
-
-    # 4. Other builds: W = 160 default, W = 1920 default
-    vivado -mode batch -source synth/ooc_synth.tcl       -tclargs conv3x3_engine
+    # 3. Implementation, W = 1920 (Table IV), default directives
+    vivado -mode batch -source synth/ooc_synth_param.tcl -tclargs sobel_fixed    1920 1080 11
     vivado -mode batch -source synth/ooc_synth_param.tcl -tclargs conv3x3_engine 1920 1080 11
 
-Each default implementation run takes a few minutes; the strategy runs take longer.
-Compare against `synth/reports/`.
+    # 4. W = 160
+    vivado -mode batch -source synth/ooc_synth.tcl -tclargs conv3x3_engine
+
+    # 5. Vitis Vision baseline: see compare/vitis_filter2d/README.md
+
+Each implementation run takes a few minutes. Compare against `synth/reports/current/`.
 
 ## BSDS500 evaluation protocol
 
@@ -173,13 +162,13 @@ with published benchmark scores.**
   is included, and none of the runtime board-level campaigns were executed.
   Throughput, latency on hardware, DDR bandwidth and real power are not
   measured anywhere here.
-* **The DDR bandwidth-feasibility model** is included as equations only (`model/ddr_model.py` reproduces the brief's Tables I and II); its inputs from the conference system are not re-measured.
+* **The DDR bandwidth-feasibility model** is included as equations only
+  (`model/ddr_model.py` reproduces the brief's Tables I and II); its inputs
+  from the conference system are not re-measured.
 * **Power is a vectorless estimate**, not a measurement.
-* **The W = 1920 engine needs non-default implementation directives** to
-  meet 148.5 MHz.
-* **Single-kernel mode outputs a magnitude**, `clamp(|acc1| >> k)`, so
-  kernels whose response changes sign (Laplacian, sharpening) are rectified.
-* **EN = 0 is sticky until reset** (see `docs/register_map.md`).
+* The `filter2D` baseline implements one kernel with zero-padded borders; the
+  engine implements two kernels with edge replication. See
+  `compare/vitis_filter2d/README.md`.
 
 ## Citation
 

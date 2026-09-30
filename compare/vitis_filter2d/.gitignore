@@ -1,0 +1,8 @@
+hls_prj/
+*.log
+*.jou
+console_*.txt
+hls_console.txt
+csim_console.txt
+.Xil/
+clockInfo.txt

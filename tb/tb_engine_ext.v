@@ -13,6 +13,8 @@
 //                     (otherwise: random TVALID gaps ~25%, random TREADY ~80%)
 //   +MIDFRAME         program the new kernel while frame 1 is still streaming
 //                     (at input row H/2); frame 1 must remain pure Sobel
+//   +ENPAUSE          clear CTRL.EN mid-frame for 300 cycles (no input may be
+//                     accepted), then set it again; frame 1 must stay bit-exact
 // Reports cycles per frame (first input beat to last output beat) and input
 // stall cycles (TVALID && !TREADY).
 // ---------------------------------------------------------------------------
@@ -66,7 +68,7 @@ module tb_engine_ext;
     reg [7:0] exp2 [0:N-1];
     reg [7:0] cfg  [0:19];
     reg [8*256:1] vec, cname, fn;
-    reg fullrate, midframe;
+    reg fullrate, midframe, enpause;
 
     // ---------------- output capture + protocol checks ----------------
     integer oidx = 0, tl_cnt = 0, tu_err = 0, tl_err = 0, err1 = 0, err2 = 0;
@@ -160,12 +162,12 @@ module tb_engine_ext;
         d = rdata;
     end
     endtask
-    integer i, c0, c1, perr = 0;
+    integer i, c0, c1, perr = 0, pause_i0 = 0;
     reg [31:0] stat;
     task program_kernel;
     begin
         c0 = cyc;
-        axil_wr(8'h00, {24'd0, cfg[1][3:0], 2'b00, cfg[0][0], 1'b1});
+        axil_wr(8'h00, {24'd0, cfg[1][3:0], 1'b0, cfg[0][1], cfg[0][0], 1'b1});
         for (i = 0; i < 9; i = i + 1) axil_wr(8'h08 + 4*i, {24'd0, cfg[2 + i]});
         for (i = 0; i < 9; i = i + 1) axil_wr(8'h2C + 4*i, {24'd0, cfg[11 + i]});
         c1 = cyc;
@@ -185,19 +187,35 @@ module tb_engine_ext;
     initial begin
         fullrate = $test$plusargs("FULLRATE");
         midframe = $test$plusargs("MIDFRAME");
+        enpause  = $test$plusargs("ENPAUSE");
         if (!$value$plusargs("VEC=%s", vec))    vec   = "tb/vectors";
         if (!$value$plusargs("CASE=%s", cname)) cname = "scharr";
         $sformat(fn, "%0s/image.hex", vec);          $readmemh(fn, img);
         $sformat(fn, "%0s/exp_sobel.hex", vec);      $readmemh(fn, exp1);
         $sformat(fn, "%0s/cfg_%0s.hex", vec, cname); $readmemh(fn, cfg);
         $sformat(fn, "%0s/exp_%0s.hex", vec, cname); $readmemh(fn, exp2);
-        $display("config: W=%0d H=%0d CW=%0d case=%0s fullrate=%0d midframe=%0d",
-                 W, H, CW, cname, fullrate, midframe);
+        $display("config: W=%0d H=%0d CW=%0d case=%0s fullrate=%0d midframe=%0d enpause=%0d",
+                 W, H, CW, cname, fullrate, midframe, enpause);
 
         repeat (8) @(negedge aclk); aresetn = 1; repeat (4) @(negedge aclk);
 
         // frame 1
         src_frame_end = N; src_run = 1;
+        if (enpause) begin
+            // CTRL.EN = 0 mid-frame (reset config otherwise): input must stop at
+            // once and stay stopped; EN = 1 resumes; frame 1 must stay bit-exact.
+            wait (iidx >= (H/4) * W + W/3);
+            axil_wr(8'h00, {24'd0, 4'd3, 4'b0000});
+            repeat (4) @(posedge aclk);
+            pause_i0 = iidx;
+            repeat (300) @(posedge aclk);
+            if (iidx != pause_i0) begin
+                $display("EN=0 did not pause input: %0d beats accepted", iidx - pause_i0);
+                perr = perr + 1;
+            end
+            axil_wr(8'h00, {24'd0, 4'd3, 4'b0001});
+            $display("EN pause: input held for 300 cycles at pixel %0d, then resumed", pause_i0);
+        end
         if (midframe) begin
             wait (iidx >= (H/2) * W);
             program_kernel;

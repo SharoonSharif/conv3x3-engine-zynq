@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gen_vectors import engine_golden, SOBEL_GX, SOBEL_GY, CASES  # noqa: E402
 
 
-def engine_push_model(img, K1, K2, mode, k):
+def engine_push_model(img, K1, K2, mode, k, signed=0):
     H, W = img.shape
     K1 = [int(v) for r in K1 for v in r]
     K2 = [int(v) for r in K2 for v in r]
@@ -46,9 +46,12 @@ def engine_push_model(img, K1, K2, mode, k):
         taps = [left[0], t1[0], t2[0],
                 left[1], t1[1], t2[1],
                 left[2], t1[2], t2[2]]
-        a1 = abs(sum(c * x for c, x in zip(K1, taps)))
+        acc1 = sum(c * x for c, x in zip(K1, taps))
         a2 = abs(sum(c * x for c, x in zip(K2, taps)))
-        s = a1 if mode == 1 else a1 + a2
+        if mode == 1:
+            s = max(acc1, 0) if signed else abs(acc1)
+        else:
+            s = abs(acc1) + a2
         out[row_out, p - 2] = min(s >> k, 255)
 
     for r in range(H):
@@ -86,11 +89,12 @@ def engine_push_model(img, K1, K2, mode, k):
 def main():
     rng = np.random.default_rng(7)
     fails = 0
-    # 1. the four manuscript kernel families on the shipped test scene
+    # 1. the kernel families on the shipped test scene
     from gen_vectors import img as scene
     for name, c in CASES.items():
-        got = engine_push_model(scene, c["K1"], c["K2"], c["mode"], c["k"])
-        ref = engine_golden(scene, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"])
+        sg = c.get("signed", 0)
+        got = engine_push_model(scene, c["K1"], c["K2"], c["mode"], c["k"], sg)
+        ref = engine_golden(scene, np.array(c["K1"]), np.array(c["K2"]), c["mode"], c["k"], sg)
         ok = np.array_equal(got, ref)
         print(f"scene/{name:9s}: {'PASS' if ok else 'FAIL'}")
         fails += (not ok)
@@ -121,7 +125,15 @@ def main():
             ref = engine_golden(im, K1, K2, mode, k)
             if not np.array_equal(got, ref):
                 print(f"H={H} case FAIL (W={W})"); fails += 1
-    print(f"random x24 + degenerate H ({'all PASS' if fails == 0 else str(fails) + ' FAILURES'})")
+    # 4. single-kernel signed mode (CTRL.SIGNED = 1), randomized
+    for t in range(12):
+        H = int(rng.integers(2, 40)); W = int(rng.integers(3, 64))
+        im = rng.integers(0, 256, size=(H, W)).astype(np.uint8)
+        K1 = rng.integers(-16, 17, size=(3, 3)); K2 = rng.integers(-16, 17, size=(3, 3))
+        k = int(rng.integers(0, 8))
+        if not np.array_equal(engine_push_model(im, K1, K2, 1, k, 1), engine_golden(im, K1, K2, 1, k, 1)):
+            print(f"signed #{t}: FAIL (H={H} W={W} k={k})"); fails += 1
+    print(f"random x24 + degenerate H + signed x12 ({'all PASS' if fails == 0 else str(fails) + ' FAILURES'})")
     sys.exit(1 if fails else 0)
 
 

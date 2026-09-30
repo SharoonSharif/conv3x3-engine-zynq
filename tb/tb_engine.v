@@ -159,7 +159,7 @@ module tb_engine;
 
         // ---- program the new kernel over AXI4-Lite ----
         c0 = cyc;
-        axil_wr(8'h00, {24'd0, cfg[1][3:0], 2'b00, cfg[0][0], 1'b1}); // CTRL: EN, MODE, K[7:4]
+        axil_wr(8'h00, {24'd0, cfg[1][3:0], 1'b0, cfg[0][1], cfg[0][0], 1'b1}); // CTRL: EN, MODE, SIGNED, K[7:4]
         for (i = 0; i < 9; i = i + 1) axil_wr(8'h08 + 4*i, {24'd0, cfg[2 + i]});
         for (i = 0; i < 9; i = i + 1) axil_wr(8'h2C + 4*i, {24'd0, cfg[11 + i]});
         c1 = cyc;

@@ -8,7 +8,7 @@ if not exist tb\logs mkdir tb\logs
 
 call xvlog -sv rtl/conv3x3_engine.v tb/tb_engine.v || exit /b 1
 call xelab -debug off tb_engine -s eng_sim || exit /b 1
-for %%K in (sobel scharr gaussian laplacian) do (
+for %%K in (sobel scharr gaussian laplacian prewitt sharpen) do (
   call xsim eng_sim -R -log tb/logs/engine_%%K.log -testplusarg "CFG=tb/vectors/cfg_%%K.hex" -testplusarg "EXP2=tb/vectors/exp_%%K.hex" || exit /b 1
 )
 

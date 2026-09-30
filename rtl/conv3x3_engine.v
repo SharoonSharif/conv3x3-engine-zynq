@@ -3,16 +3,20 @@
 // Freshly reconstructed from the manuscript's design specification
 // (Sec. III-G, Table 3). Original sources lost; independent implementation.
 //
-// Contract (bit-exact, matches scripts/gen_vectors.py golden):
+// Contract (bit-exact, matches golden/gen_vectors.py):
 //   window: 3x3, EDGE-REPLICATED borders
 //   acc_k  = sum_i K_k[i] * pix[i]            (signed; |acc| < 2^19)
 //   dual   : y = clamp((|acc1| + |acc2|) >> k, 0, 255)     (MODE = 0)
-//   single : y = clamp( |acc1|            >> k, 0, 255)     (MODE = 1)
+//   single : y = clamp( |acc1|            >> k, 0, 255)     (MODE = 1, SIGNED = 0)
+//   signed : y = clamp(  acc1             >> k, 0, 255)     (MODE = 1, SIGNED = 1;
+//            negative results clamp to 0, e.g. for sharpening)
 //
-// AXI4-Lite map (Table 3): 0x00 CTRL {bit0 EN, bit1 MODE, [6:4] K};
+// AXI4-Lite map: 0x00 CTRL {bit0 EN, bit1 MODE, bit2 SIGNED, [7:4] K};
 // 0x04 STATUS {bit0 busy, bit1 coeff-update pending}; 0x08+4i K1[i];
-// 0x2C+4i K2[i] (i = 0..8 row-major, signed 8-bit). All config is shadowed
-// and commits at the next accepted start-of-frame (TUSER) — no mid-frame tear.
+// 0x2C+4i K2[i] (i = 0..8 row-major, signed 8-bit). MODE, SIGNED, K and the
+// coefficients are shadowed and commit at the next accepted start-of-frame
+// (TUSER) — no mid-frame tear. EN acts immediately: EN = 0 pauses input
+// acceptance (TREADY low) and EN = 1 resumes it.
 // Reset state: Sobel Gx/Gy, dual, k = 3 (drop-in for the fixed core).
 //
 // Microarchitecture: every accepted pixel forms a vertical triple
@@ -21,7 +25,7 @@
 // left replication at p == 2; one extra push after EOL replicates the right
 // edge; one synthetic row after the last line replicates the bottom edge.
 // The identical push algorithm is validated against the numpy golden model
-// in scripts/rtl_model.py.
+// in golden/rtl_model.py.
 // ---------------------------------------------------------------------------
 `timescale 1ns/1ps
 `default_nettype none
@@ -61,10 +65,10 @@ module conv3x3_engine #(
     input  wire        s_axil_rready
 );
     // ---------------- shadow + active configuration ----------------
-    reg        sh_en, sh_mode;  reg [3:0] sh_k;
+    reg        sh_en, sh_mode, sh_sgn;  reg [3:0] sh_k;
     reg signed [7:0] sh_k1 [0:8], sh_k2 [0:8];
     reg        cfg_pending;
-    reg        en_q, mode_q;    reg [3:0] k_q;
+    reg        mode_q, sgn_q;   reg [3:0] k_q;
     reg signed [7:0] k1_q [0:8], k2_q [0:8];
     reg        busy_q;
     reg        commit_pulse;
@@ -85,7 +89,7 @@ module conv3x3_engine #(
         if (!aresetn) begin
             s_axil_awready<=1'b0; s_axil_wready<=1'b0; s_axil_bvalid<=1'b0;
             s_axil_bresp<=2'b00; aw_hs<=1'b0; w_hs<=1'b0; awaddr_q<=8'd0;
-            cfg_pending<=1'b0; sh_en<=1'b1; sh_mode<=1'b0; sh_k<=4'd3;
+            cfg_pending<=1'b0; sh_en<=1'b1; sh_mode<=1'b0; sh_sgn<=1'b0; sh_k<=4'd3;
             set_sobel_sh;
         end else begin
             s_axil_awready <= (!aw_hs && s_axil_awvalid && !s_axil_awready);
@@ -94,7 +98,8 @@ module conv3x3_engine #(
             if (s_axil_wvalid && s_axil_wready) w_hs<=1'b1;
             if (aw_hs && w_hs && !s_axil_bvalid) begin
                 if (awaddr_q==8'h00) begin
-                    sh_en<=s_axil_wdata[0]; sh_mode<=s_axil_wdata[1]; sh_k<=s_axil_wdata[7:4];
+                    sh_en<=s_axil_wdata[0]; sh_mode<=s_axil_wdata[1]; sh_sgn<=s_axil_wdata[2];
+                    sh_k<=s_axil_wdata[7:4];
                 end else if (awaddr_q>=8'h08 && awaddr_q<=8'h28)
                     sh_k1[(awaddr_q-8'h08)>>2] <= s_axil_wdata[7:0];
                 else if (awaddr_q>=8'h2C && awaddr_q<=8'h4C)
@@ -114,7 +119,7 @@ module conv3x3_engine #(
             s_axil_arready <= (!s_axil_rvalid && s_axil_arvalid && !s_axil_arready);
             if (s_axil_arvalid && s_axil_arready) begin
                 s_axil_rvalid<=1'b1; s_axil_rresp<=2'b00;
-                if (s_axil_araddr==8'h00)      s_axil_rdata <= {24'd0, sh_k, 2'b00, sh_mode, sh_en};
+                if (s_axil_araddr==8'h00)      s_axil_rdata <= {24'd0, sh_k, 1'b0, sh_sgn, sh_mode, sh_en};
                 else if (s_axil_araddr==8'h04) s_axil_rdata <= {30'd0, cfg_pending, busy_q};
                 else if (s_axil_araddr>=8'h08 && s_axil_araddr<=8'h28)
                     s_axil_rdata <= {{24{sh_k1[(s_axil_araddr-8'h08)>>2][7]}}, sh_k1[(s_axil_araddr-8'h08)>>2]};
@@ -142,13 +147,13 @@ module conv3x3_engine #(
 
     wire stall = m_axis_tvalid && !m_axis_tready;
     wire ce    = !stall;
-    assign s_axis_tready = (state == ST_ROW) && ce && en_q;
+    assign s_axis_tready = (state == ST_ROW) && ce && sh_en;   // EN pauses immediately
     wire in_hs = s_axis_tvalid && s_axis_tready;
     wire sof_accept = in_hs && s_axis_tuser;
 
     always @(posedge aclk) begin                 // config commit at SOF
         if (!aresetn) begin
-            en_q<=1'b1; mode_q<=1'b0; k_q<=4'd3; commit_pulse<=1'b0;
+            mode_q<=1'b0; sgn_q<=1'b0; k_q<=4'd3; commit_pulse<=1'b0;
             k1_q[0]<=-8'sd1;k1_q[1]<=8'sd0;k1_q[2]<=8'sd1;k1_q[3]<=-8'sd2;k1_q[4]<=8'sd0;
             k1_q[5]<=8'sd2;k1_q[6]<=-8'sd1;k1_q[7]<=8'sd0;k1_q[8]<=8'sd1;
             k2_q[0]<=-8'sd1;k2_q[1]<=-8'sd2;k2_q[2]<=-8'sd1;k2_q[3]<=8'sd0;k2_q[4]<=8'sd0;
@@ -156,7 +161,7 @@ module conv3x3_engine #(
         end else begin
             commit_pulse <= 1'b0;
             if (ce && sof_accept) begin
-                en_q<=sh_en; mode_q<=sh_mode; k_q<=sh_k;
+                mode_q<=sh_mode; sgn_q<=sh_sgn; k_q<=sh_k;
                 for (ii=0; ii<9; ii=ii+1) begin k1_q[ii]<=sh_k1[ii]; k2_q[ii]<=sh_k2[ii]; end
                 commit_pulse <= 1'b1;
             end
@@ -263,20 +268,24 @@ module conv3x3_engine #(
     reg signed [19:0] acc1_q, acc2_q;
     reg               sofp_q;
     reg [3:0]         kB_q, kC_q, kD_q;
-    reg               mB_q, mC_q;
+    reg               mB_q, mC_q, sB_q, sC_q;
     reg               vD_q;
     reg [20:0]        mag_q;
     reg [15:0]        rowD_q;
     reg [CW-1:0]      ccD_q;
 
-    wire lrep = (pcnt_q == 2);
+    // left-border replication flag, registered alongside pcnt_q
+    // (lrep_q == (pcnt_q == 2) every cycle; keeps the compare off the
+    //  window-mux -> DSP input path)
+    reg lrep_q;
+    wire lrep = lrep_q;
     wire [7:0] p0 = lrep ? t1_t : t0_t,  p1 = t1_t,  p2 = t2_t;
     wire [7:0] p3 = lrep ? t1_m : t0_m,  p4 = t1_m,  p5 = t2_m;
     wire [7:0] p6 = lrep ? t1_b : t0_b,  p7 = t1_b,  p8 = t2_b;
 
     always @(posedge aclk) begin
         if (!aresetn) begin
-            push_q<=1'b0; pcnt_q<={CW{1'b0}}; rowp_q<=16'd0;
+            push_q<=1'b0; pcnt_q<={CW{1'b0}}; lrep_q<=1'b0; rowp_q<=16'd0;
             vB_q<=1'b0; rowB_q<=16'd0; ccB_q<={CW{1'b0}};
             v1_q<=1'b0; acc1_q<=20'sd0; acc2_q<=20'sd0;
             row1_q<=16'd0; cc1_q<={CW{1'b0}};
@@ -286,6 +295,7 @@ module conv3x3_engine #(
             push_q <= push;
             if (push) begin
                 pcnt_q <= pcnt + 1'b1;
+                lrep_q <= (pcnt == {{(CW-1){1'b0}}, 1'b1});   // pcnt + 1 == 2
                 rowp_q <= row_out;
             end
             // stage B: 18 registered products (post-push taps)
@@ -304,6 +314,7 @@ module conv3x3_engine #(
             rowB_q<= rowp_q;
             kB_q  <= k_q;
             mB_q  <= mode_q;
+            sB_q  <= sgn_q;
             // stage C: adder trees
             acc1_q <= pr1[0]+pr1[1]+pr1[2]+pr1[3]+pr1[4]+pr1[5]+pr1[6]+pr1[7]+pr1[8];
             acc2_q <= pr2[0]+pr2[1]+pr2[2]+pr2[3]+pr2[4]+pr2[5]+pr2[6]+pr2[7]+pr2[8];
@@ -312,6 +323,7 @@ module conv3x3_engine #(
             row1_q <= rowB_q;
             kC_q   <= kB_q;
             mC_q   <= mB_q;
+            sC_q   <= sB_q;
         end
     end
 
@@ -325,7 +337,9 @@ module conv3x3_engine #(
             rowD_q<=16'd0; ccD_q<={CW{1'b0}};
         end else if (ce) begin
             vD_q   <= v1_q;
-            mag_q  <= mC_q ? {1'b0,a1} : ({1'b0,a1} + {1'b0,a2});
+            if (!mC_q)      mag_q <= {1'b0,a1} + {1'b0,a2};           // dual magnitude
+            else if (!sC_q) mag_q <= {1'b0,a1};                       // single, rectified
+            else            mag_q <= acc1_q[19] ? 21'd0 : {1'b0,acc1_q[19:0]}; // single, signed
             kD_q   <= kC_q;
             rowD_q <= row1_q;
             ccD_q  <= cc1_q;

@@ -10,11 +10,13 @@ call xelab -debug off tb_engine_ext -s ext160 || exit /b 1
 call xvlog -sv -d "TB_W=1920" -d "TB_H=16" -d "TB_CW=11" rtl/conv3x3_engine.v tb/tb_engine_ext.v || exit /b 1
 call xelab -debug off tb_engine_ext -s ext1920 || exit /b 1
 
-for %%K in (sobel scharr gaussian laplacian) do (
+for %%K in (sobel scharr gaussian laplacian prewitt sharpen) do (
   call xsim ext160  -R -log tb/logs_ext/w160_%%K_midframe.log  -testplusarg "VEC=tb/vectors"          -testplusarg "CASE=%%K" -testplusarg MIDFRAME || exit /b 1
   call xsim ext1920 -R -log tb/logs_ext/w1920_%%K_midframe.log -testplusarg "VEC=tb/vectors_w1920_h16" -testplusarg "CASE=%%K" -testplusarg MIDFRAME || exit /b 1
 )
 call xsim ext160  -R -log tb/logs_ext/w160_scharr_fullrate.log  -testplusarg "VEC=tb/vectors"          -testplusarg "CASE=scharr" -testplusarg FULLRATE || exit /b 1
 call xsim ext1920 -R -log tb/logs_ext/w1920_scharr_fullrate.log -testplusarg "VEC=tb/vectors_w1920_h16" -testplusarg "CASE=scharr" -testplusarg FULLRATE || exit /b 1
 call xsim ext1920 -R -log tb/logs_ext/w1920_scharr_fullrate_midframe.log -testplusarg "VEC=tb/vectors_w1920_h16" -testplusarg "CASE=scharr" -testplusarg FULLRATE -testplusarg MIDFRAME || exit /b 1
+call xsim ext160  -R -log tb/logs_ext/w160_sobel_enpause.log  -testplusarg "VEC=tb/vectors"          -testplusarg "CASE=sharpen" -testplusarg ENPAUSE || exit /b 1
+call xsim ext1920 -R -log tb/logs_ext/w1920_sobel_enpause_fullrate.log -testplusarg "VEC=tb/vectors_w1920_h16" -testplusarg "CASE=sharpen" -testplusarg ENPAUSE -testplusarg FULLRATE || exit /b 1
 endlocal

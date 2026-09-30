@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Tue Sep 29 15:06:35 2026
-# Process ID         : 45992
+# Start of session at: Wed Sep 30 14:26:15 2026
+# Process ID         : 50828
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs/engine_gaussian.log -mode tcl -source {xsim.dir/eng_sim/xsim_script.tcl}
 # Log file           : <repo>/tb/logs/engine_gaussian.log
@@ -17,9 +17,9 @@
 # CPU Physical cores : 12
 # CPU Logical cores  : 24
 # Host memory        : 51299 MB
-# Swap memory        : 7845 MB
-# Total Virtual      : 59144 MB
-# Available Virtual  : 10766 MB
+# Swap memory        : 17396 MB
+# Total Virtual      : 68695 MB
+# Available Virtual  : 1671 MB
 #-----------------------------------------------------------
 source xsim.dir/eng_sim/xsim_script.tcl
 # xsim {eng_sim} -testplusarg CFG=tb/vectors/cfg_gaussian.hex -testplusarg EXP2=tb/vectors/exp_gaussian.hex -autoloadwcfg -runall
@@ -31,4 +31,4 @@ frame2 (swapped kernel): 0 mismatches / 19200 px
 TB PASS: both frames bit-exact; tlast count = 240 (exp 240)
 $finish called at time : 945495 ns : File "<repo>/tb/tb_engine.v" Line 187
 exit
-INFO: [Common 17-206] Exiting xsim at Tue Sep 29 15:06:37 2026...
+INFO: [Common 17-206] Exiting xsim at Wed Sep 30 14:26:18 2026...

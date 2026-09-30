@@ -22,6 +22,16 @@
    "mode": 1,
    "k": 0,
    "checksum": 5808428
+  },
+  "prewitt": {
+   "mode": 0,
+   "k": 3,
+   "checksum": 1124742
+  },
+  "sharpen": {
+   "mode": 1,
+   "k": 0,
+   "checksum": 6245237
   }
  }
 }
