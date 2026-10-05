@@ -5,11 +5,11 @@
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
 # Start of session at: Mon Oct  5 10:56:43 2026
 # Process ID         : 58108
-# Current directory  : C:/reconkit_v3/scaling
+# Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_bram/w1920_h1080_scharr_fullrate_midframe.log -mode tcl -source {xsim.dir/ext1080p_bram/xsim_script.tcl}
-# Log file           : C:/reconkit_v3/scaling/tb/logs_bram/w1920_h1080_scharr_fullrate_midframe.log
-# Journal file       : C:/reconkit_v3/scaling\xsim.jou
-# Running On         : 67AIS-SS1
+# Log file           : <repo>/tb/logs_bram/w1920_h1080_scharr_fullrate_midframe.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
 # Platform           : Windows 11
 # Operating System   : 26300
 # Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
@@ -32,7 +32,7 @@ frame2 (scharr): 0 mismatches / 2073600 px
 throughput frame1: 2076604 cycles first-in..last-out for 2073600 px (1.0014 cyc/px); input stall cycles total 2156
 throughput frame2: 2076604 cycles first-in..last-out (1.0014 cyc/px)
 TB PASS: both frames bit-exact; tlast count = 2160 (exp 2160)
-$finish called at time : 41532295 ns : File "C:/reconkit_v3/scaling/tb/tb_engine_ext.v" Line 248
+$finish called at time : 41532295 ns : File "<repo>/tb/tb_engine_ext.v" Line 248
 run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:39 . Memory (MB): peak = 227.785 ; gain = 0.000
 exit
 INFO: xsimkernel Simulation Memory Usage: 30552 KB (Peak: 30552 KB), Simulation CPU Usage: 38749 ms

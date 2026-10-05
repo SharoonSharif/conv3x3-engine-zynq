@@ -5,11 +5,11 @@
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
 # Start of session at: Mon Oct  5 10:55:36 2026
 # Process ID         : 40976
-# Current directory  : C:/reconkit_v3/scaling
+# Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_bram/engine_prewitt.log -mode tcl -source {xsim.dir/eng_sim_bram/xsim_script.tcl}
-# Log file           : C:/reconkit_v3/scaling/tb/logs_bram/engine_prewitt.log
-# Journal file       : C:/reconkit_v3/scaling\xsim.jou
-# Running On         : 67AIS-SS1
+# Log file           : <repo>/tb/logs_bram/engine_prewitt.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
 # Platform           : Windows 11
 # Operating System   : 26300
 # Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
@@ -29,6 +29,6 @@ frame1 (reset Sobel): 0 mismatches / 19200 px
 coefficient-swap programming: 76 clock cycles (19 AXI4-Lite writes)
 frame2 (swapped kernel): 0 mismatches / 19200 px
 TB PASS: both frames bit-exact; tlast count = 240 (exp 240)
-$finish called at time : 945495 ns : File "C:/reconkit_v3/scaling/tb/tb_engine.v" Line 190
+$finish called at time : 945495 ns : File "<repo>/tb/tb_engine.v" Line 190
 exit
 INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:55:38 2026...
