@@ -26,6 +26,11 @@
 // edge; one synthetic row after the last line replicates the bottom edge.
 // The identical push algorithm is validated against the numpy golden model
 // in golden/rtl_model.py.
+//
+// LB_BRAM (default 0) selects the line-buffer style: 0 = distributed RAM
+// read combinationally (the original code path), 1 = block RAM with a
+// registered read issued one cycle early. Both are bit-exact and have the
+// same throughput and interface contract.
 // ---------------------------------------------------------------------------
 `timescale 1ns/1ps
 `default_nettype none
@@ -33,7 +38,9 @@
 module conv3x3_engine #(
     parameter integer W  = 160,
     parameter integer H  = 120,
-    parameter integer CW = 9            // counter width; 2**CW > W+1
+    parameter integer CW = 9,           // counter width; 2**CW > W+1
+    parameter integer LB_BRAM = 0       // 0: LUTRAM line buffers (combinational read);
+                                        // 1: block-RAM line buffers (registered read)
 ) (
     input  wire        aclk,
     input  wire        aresetn,
@@ -168,9 +175,17 @@ module conv3x3_engine #(
         end
     end
 
-    // line buffers (BRAM-inferable): lb1 = previous row, lb2 = two back
+    // line buffers: lb1 = previous row, lb2 = two back.
+    // LB_BRAM = 0: distributed RAM read combinationally in the cycle the pixel
+    //   at column c is accepted (lb1/lb2 below; the LB_BRAM = 1 branches of
+    //   the constant `if (LB_BRAM == 0)` tests are folded away).
+    // LB_BRAM = 1: block RAM (g_lb_bram.lb1_b/lb2_b, registered read); lb1_rd/
+    //   lb2_rd always hold the entry of the column consumed NEXT, see below.
     reg [7:0] lb1 [0:(1<<CW)-1];
     reg [7:0] lb2 [0:(1<<CW)-1];
+    reg [7:0] lb1_rd, lb2_rd;          // LB_BRAM = 1 only (driven in g_lb_bram)
+    reg       brow_q;                  // LB_BRAM = 1 only: taps hold the synthetic
+                                       // bottom row in permuted slots (see q0..q8)
 
     // 3-deep triple pipe (t0 oldest .. t2 newest)
     reg [7:0] t0_t,t0_m,t0_b, t1_t,t1_m,t1_b, t2_t,t2_m,t2_b;
@@ -181,13 +196,30 @@ module conv3x3_engine #(
         case (state)
             ST_ROW: begin
                 bot_px = s_axis_tdata;
-                mid_px = lb1[col_in];
-                top_px = (row_in == 16'd1) ? lb1[col_in] : lb2[col_in];
+                if (LB_BRAM == 0) begin
+                    mid_px = lb1[col_in];
+                    top_px = (row_in == 16'd1) ? lb1[col_in] : lb2[col_in];
+                end else begin
+                    mid_px = lb1_rd;
+                    top_px = (row_in == 16'd1) ? lb1_rd : lb2_rd;
+                end
             end
             ST_BROW: begin
-                bot_px = lb1[col_ff];                    // replicate last row
-                mid_px = lb1[col_ff];
-                top_px = (H >= 2) ? lb2[col_ff] : lb1[col_ff];
+                if (LB_BRAM == 0) begin
+                    bot_px = lb1[col_ff];                // replicate last row
+                    mid_px = lb1[col_ff];
+                    top_px = (H >= 2) ? lb2[col_ff] : lb1[col_ff];
+                end else begin
+                    // synthetic bottom row: the triple is pushed in permuted
+                    // slots (t_t <- lb1 = last row, t_m <- lb2 = row above,
+                    // t_b held) and brow_q steers the taps, so that neither
+                    // lb1_rd nor s_axis_tdata is the sole source of a tap
+                    // register (Vivado would otherwise try to absorb that
+                    // register into the block RAM and fall back to LUTRAM)
+                    bot_px = t2_b;
+                    mid_px = (H >= 2) ? lb2_rd : lb1_rd;
+                    top_px = lb1_rd;
+                end
             end
             default: begin                                // R/B FLUSH: repeat
                 bot_px = t2_b; mid_px = t2_m; top_px = t2_t;
@@ -217,8 +249,10 @@ module conv3x3_engine #(
                     row_in<=16'd0; busy_q<=1'b1; frame_done_q<=1'b0;
                     row_out<=16'd0; pcnt<={CW{1'b0}};
                 end
-                lb2[col_in] <= lb1[col_in];
-                lb1[col_in] <= s_axis_tdata;
+                if (LB_BRAM == 0) begin
+                    lb2[col_in] <= lb1[col_in];
+                    lb1[col_in] <= s_axis_tdata;
+                end
                 if (s_axis_tlast) begin
                     col_in <= {CW{1'b0}};
                     if (row_in >= 16'd1) state <= ST_RFLUSH;   // emit col W-1
@@ -248,6 +282,46 @@ module conv3x3_engine #(
             endcase
         end
     end
+
+    // ---------------- LB_BRAM = 1: block-RAM line buffers ------------------
+    // Registered read one cycle early: the read address is col_in+1 (or 0
+    // after EOL) when a pixel is accepted, otherwise col_in, and col_ff+1 (or
+    // 0) during the synthetic bottom row, so lb1_rd/lb2_rd hold the entry of
+    // the column consumed next.  All registers share the clock enable ce, so
+    // the pre-read is stable across output stalls.  The write (column c) and
+    // the read (column c+1 or 0) never hit the same address: no read-during-
+    // write hazard.  Throughput and the output contract are unchanged.
+    // Bottom-row replication: see the ST_BROW branch of the triple mux and
+    // the q0..q8 tap selection (brow_q) in the MAC stage.
+    generate if (LB_BRAM != 0) begin : g_lb_bram
+        (* ram_style = "block" *) reg [7:0] lb1_b [0:(1<<CW)-1];
+        (* ram_style = "block" *) reg [7:0] lb2_b [0:(1<<CW)-1];
+        reg [CW-1:0] rd_addr;
+        always @(*) begin
+            case (state)
+                ST_ROW:  rd_addr = !in_hs        ? col_in :
+                                   s_axis_tlast  ? {CW{1'b0}} : col_in + 1'b1;
+                ST_BROW: rd_addr = (col_ff == W-1) ? {CW{1'b0}} : col_ff + 1'b1;
+                default: rd_addr = {CW{1'b0}};          // R/B FLUSH: column 0 next
+            endcase
+        end
+        always @(posedge aclk) begin                     // write port
+            if (ce && in_hs) begin
+                lb2_b[col_in] <= lb1_rd;                 // == lb1[col_in] (previous row)
+                lb1_b[col_in] <= s_axis_tdata;
+            end
+        end
+        always @(posedge aclk) begin                     // registered read port
+            if (ce) begin
+                lb1_rd <= lb1_b[rd_addr];
+                lb2_rd <= lb2_b[rd_addr];
+            end
+        end
+        always @(posedge aclk) begin                     // aligned with the taps
+            if (!aresetn) brow_q <= 1'b0;
+            else if (ce && push) brow_q <= (state == ST_BROW) || (state == ST_BFLUSH);
+        end
+    end endgenerate
 
     // ---------------- MAC stage (two-stage: products, then adder trees) --
     // The cycle after push #p, taps (t0,t1,t2) hold triples (p-2, p-1, p):
@@ -282,6 +356,13 @@ module conv3x3_engine #(
     wire [7:0] p0 = lrep ? t1_t : t0_t,  p1 = t1_t,  p2 = t2_t;
     wire [7:0] p3 = lrep ? t1_m : t0_m,  p4 = t1_m,  p5 = t2_m;
     wire [7:0] p6 = lrep ? t1_b : t0_b,  p7 = t1_b,  p8 = t2_b;
+    // LB_BRAM = 1: on the synthetic bottom row the taps are permuted
+    // (top <- t_m, mid <- t_t, bot <- t_t); constant-folded to p0..p8 when
+    // LB_BRAM = 0
+    wire       brow = (LB_BRAM != 0) && brow_q;
+    wire [7:0] q0 = brow ? (lrep ? t1_m : t0_m) : p0,  q1 = brow ? t1_m : p1,  q2 = brow ? t2_m : p2;
+    wire [7:0] q3 = brow ? p0 : p3,                    q4 = brow ? t1_t : p4,  q5 = brow ? t2_t : p5;
+    wire [7:0] q6 = brow ? p0 : p6,                    q7 = brow ? t1_t : p7,  q8 = brow ? t2_t : p8;
 
     always @(posedge aclk) begin
         if (!aresetn) begin
@@ -299,16 +380,16 @@ module conv3x3_engine #(
                 rowp_q <= row_out;
             end
             // stage B: 18 registered products (post-push taps)
-            pr1[0]<=k1_q[0]*$signed({1'b0,p0}); pr1[1]<=k1_q[1]*$signed({1'b0,p1});
-            pr1[2]<=k1_q[2]*$signed({1'b0,p2}); pr1[3]<=k1_q[3]*$signed({1'b0,p3});
-            pr1[4]<=k1_q[4]*$signed({1'b0,p4}); pr1[5]<=k1_q[5]*$signed({1'b0,p5});
-            pr1[6]<=k1_q[6]*$signed({1'b0,p6}); pr1[7]<=k1_q[7]*$signed({1'b0,p7});
-            pr1[8]<=k1_q[8]*$signed({1'b0,p8});
-            pr2[0]<=k2_q[0]*$signed({1'b0,p0}); pr2[1]<=k2_q[1]*$signed({1'b0,p1});
-            pr2[2]<=k2_q[2]*$signed({1'b0,p2}); pr2[3]<=k2_q[3]*$signed({1'b0,p3});
-            pr2[4]<=k2_q[4]*$signed({1'b0,p4}); pr2[5]<=k2_q[5]*$signed({1'b0,p5});
-            pr2[6]<=k2_q[6]*$signed({1'b0,p6}); pr2[7]<=k2_q[7]*$signed({1'b0,p7});
-            pr2[8]<=k2_q[8]*$signed({1'b0,p8});
+            pr1[0]<=k1_q[0]*$signed({1'b0,q0}); pr1[1]<=k1_q[1]*$signed({1'b0,q1});
+            pr1[2]<=k1_q[2]*$signed({1'b0,q2}); pr1[3]<=k1_q[3]*$signed({1'b0,q3});
+            pr1[4]<=k1_q[4]*$signed({1'b0,q4}); pr1[5]<=k1_q[5]*$signed({1'b0,q5});
+            pr1[6]<=k1_q[6]*$signed({1'b0,q6}); pr1[7]<=k1_q[7]*$signed({1'b0,q7});
+            pr1[8]<=k1_q[8]*$signed({1'b0,q8});
+            pr2[0]<=k2_q[0]*$signed({1'b0,q0}); pr2[1]<=k2_q[1]*$signed({1'b0,q1});
+            pr2[2]<=k2_q[2]*$signed({1'b0,q2}); pr2[3]<=k2_q[3]*$signed({1'b0,q3});
+            pr2[4]<=k2_q[4]*$signed({1'b0,q4}); pr2[5]<=k2_q[5]*$signed({1'b0,q5});
+            pr2[6]<=k2_q[6]*$signed({1'b0,q6}); pr2[7]<=k2_q[7]*$signed({1'b0,q7});
+            pr2[8]<=k2_q[8]*$signed({1'b0,q8});
             vB_q  <= push_q && (pcnt_q >= 2);
             ccB_q <= pcnt_q - 2'd2;
             rowB_q<= rowp_q;

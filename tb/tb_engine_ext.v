@@ -28,6 +28,9 @@
 `ifndef TB_CW
   `define TB_CW 9
 `endif
+`ifndef TB_LB_BRAM
+  `define TB_LB_BRAM 0      // 1: block-RAM line buffers (LB_BRAM=1)
+`endif
 
 module tb_engine_ext;
     localparam integer W  = `TB_W;
@@ -50,7 +53,7 @@ module tb_engine_ext;
     reg  [7:0]  araddr = 0;  reg arvalid = 0;  wire arready;
     wire [31:0] rdata;       wire [1:0] rresp; wire rvalid; reg rready = 1;
 
-    conv3x3_engine #(.W(W), .H(H), .CW(CW)) dut (
+    conv3x3_engine #(.W(W), .H(H), .CW(CW), .LB_BRAM(`TB_LB_BRAM)) dut (
         .aclk(aclk), .aresetn(aresetn),
         .s_axis_tdata(s_tdata), .s_axis_tvalid(s_tvalid), .s_axis_tready(s_tready),
         .s_axis_tuser(s_tuser), .s_axis_tlast(s_tlast),
