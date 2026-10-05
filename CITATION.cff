@@ -21,6 +21,9 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23065727
     description: "Version DOI of v1.1.0 (2026-09-30)"
+  - type: doi
+    value: 10.5281/zenodo.23168873
+    description: "Version DOI of v1.2.0 (2026-10-05), the version behind the revised brief"
 license: MIT
 repository-code: "https://github.com/SharoonSharif/conv3x3-engine-zynq"
 keywords:
