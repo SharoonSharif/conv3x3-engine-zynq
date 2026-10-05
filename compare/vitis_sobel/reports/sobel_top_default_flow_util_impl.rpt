@@ -1,0 +1,45 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date         : Mon Oct  5 10:33:59 2026
+| Host         : <redacted> running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file sobel_top_default_flow_util_impl.rpt
+| Design       : sobel_top
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------------------------------------------------------+-------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+|                                     Instance                                    |                                  Module                                 | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------------------------------------------------------+-------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+| sobel_top                                                                       |                                                                   (top) |        845 |        842 |       0 |    3 | 1163 |      0 |      3 |          0 |
+|   (sobel_top)                                                                   |                                                                   (top) |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|   AXIvideo2xfMat_8_0_1080_1920_1_2_U0                                           |                            sobel_top_AXIvideo2xfMat_8_0_1080_1920_1_2_s |        115 |        115 |       0 |    0 |  123 |      0 |      0 |          0 |
+|     (AXIvideo2xfMat_8_0_1080_1920_1_2_U0)                                       |                            sobel_top_AXIvideo2xfMat_8_0_1080_1920_1_2_s |         21 |         21 |       0 |    0 |   56 |      0 |      0 |          0 |
+|     grp_AXIvideo2xfMat_8_0_1080_1920_1_2_Pipeline_loop_col_zxi2mat_fu_180       |    sobel_top_AXIvideo2xfMat_8_0_1080_1920_1_2_Pipeline_loop_col_zxi2mat |         52 |         52 |       0 |    0 |   29 |      0 |      0 |          0 |
+|   Sobel_0_3_0_3_1080_1920_1_false_2_2_2_U0                                      |                       sobel_top_Sobel_0_3_0_3_1080_1920_1_false_2_2_2_s |        294 |        291 |       0 |    3 |  460 |      0 |      3 |          0 |
+|     grp_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s_fu_68     | sobel_top_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s |        293 |        290 |       0 |    3 |  433 |      0 |      3 |          0 |
+|       (grp_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s_fu_68) | sobel_top_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s |         43 |         43 |       0 |    0 |  110 |      0 |      0 |          0 |
+|       grp_xFSobelFilter3x3_Pipeline_Col_Loop_fu_164                             |                            sobel_top_xFSobelFilter3x3_Pipeline_Col_Loop |        169 |        166 |       0 |    3 |  232 |      0 |      0 |          0 |
+|         (grp_xFSobelFilter3x3_Pipeline_Col_Loop_fu_164)                         |                            sobel_top_xFSobelFilter3x3_Pipeline_Col_Loop |         78 |         75 |       0 |    3 |  176 |      0 |      0 |          0 |
+|         grp_xFSobel3x3_1_1_0_4_s_fu_333                                         |                                          sobel_top_xFSobel3x3_1_1_0_4_s |         64 |         64 |       0 |    0 |   54 |      0 |      0 |          0 |
+|   control_s_axi_U                                                               |                                                 sobel_top_control_s_axi |         93 |         93 |       0 |    0 |  116 |      0 |      0 |          0 |
+|   sobel_combine_U0                                                              |                                                 sobel_top_sobel_combine |         79 |         79 |       0 |    0 |  119 |      0 |      0 |          0 |
+|     grp_sobel_combine_Pipeline_COL_LOOP_fu_90                                   |                               sobel_top_sobel_combine_Pipeline_COL_LOOP |         64 |         64 |       0 |    0 |   81 |      0 |      0 |          0 |
+|       (grp_sobel_combine_Pipeline_COL_LOOP_fu_90)                               |                               sobel_top_sobel_combine_Pipeline_COL_LOOP |         41 |         41 |       0 |    0 |   79 |      0 |      0 |          0 |
+|   xfMat2AXIvideo_8_0_1080_1920_1_2_0_U0                                         |                          sobel_top_xfMat2AXIvideo_8_0_1080_1920_1_2_0_s |         85 |         85 |       0 |    0 |  131 |      0 |      0 |          0 |
+|     (xfMat2AXIvideo_8_0_1080_1920_1_2_0_U0)                                     |                          sobel_top_xfMat2AXIvideo_8_0_1080_1920_1_2_0_s |         14 |         14 |       0 |    0 |   72 |      0 |      0 |          0 |
++---------------------------------------------------------------------------------+-------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+
