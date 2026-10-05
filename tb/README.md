@@ -43,7 +43,8 @@ default 160 x 120, CW 9). Plusargs:
 * `+ENPAUSE`: clear CTRL.EN mid-frame for 300 cycles (no input may be
   accepted), then set it again; frame 1 must stay bit-exact.
 
-It reports cycles per frame and input stall cycles.
+It reports cycles per frame, input stall cycles and the frame-1 latency
+(first accepted input beat to first output beat).
 
     tb\run_xsim_ext.bat      160x120 and 1920x16: 6 kernels mid-frame, full-rate and EN-pause runs
     tb\run_xsim_1080p.bat    1920x1080, Scharr, full rate + mid-frame
@@ -53,6 +54,35 @@ It reports cycles per frame and input stall cycles.
 
 Both testbenches accept `-d TB_LB_BRAM=<0|1>` (default 0) and pass it to the
 DUT's `LB_BRAM` parameter.
+
+### Long-run and adversarial mode (`+FRAMES`)
+
+* `+FRAMES=N`: stream N frames of the same image back to back. Frame 1 uses
+  the reset Sobel configuration; frames 2..N cycle through scharr, prewitt,
+  gaussian, laplacian, sharpen, sobel. The kernel of frame f+1 is written
+  (19 AXI4-Lite writes) while frame f streams, at an LFSR-chosen input row
+  (row 0 and row H-1 each with probability 1/8, otherwise uniform), and every
+  frame is compared against the expected image of its own kernel. Only the
+  expected images a run needs are loaded. `+CASE` is ignored.
+* `+NOSWAP`: long-run mode without any kernel write (all frames Sobel).
+* `+ADVERSARIAL`: around every commit point `m_axis_tready` is held low for an
+  LFSR-chosen 1000..2000 cycles. Per frame the LFSR picks (A) hold the SOF beat
+  until the engine is idle and present it with TREADY already low, so the stall
+  starts in the very cycle the SOF beat is accepted, or (B) present the SOF
+  back to back behind the previous frame, so it is accepted while the previous
+  frame's tail is still in the pipe and the stall starts in the cycle after the
+  accept edge. A second stall starts at the first EOL of every frame (in its
+  accept cycle), and 2..4 input gaps (TVALID low) of 500..1499 cycles are
+  inserted per frame at LFSR-chosen mid-line pixels. The usual random
+  backpressure and input gaps apply elsewhere; kernel writes may land inside a
+  stall (row-0 writes always do).
+* `+VERBOSE`: one line per stall / gap event (never per cycle).
+
+Protocol checks (TUSER on the first pixel only, TLAST on the last column) and
+`STATUS.pending` checks stay active across all frames; a watchdog aborts after
+200,000 cycles without any handshake.
+
+    tb\run_xsim_long.bat [all|a|b|c|d|e|f]    runs and results: tb/logs_long/README.md
 
 ## Recorded results (xsim 2026.1, 2026-09-30): 25 runs, all TB PASS
 

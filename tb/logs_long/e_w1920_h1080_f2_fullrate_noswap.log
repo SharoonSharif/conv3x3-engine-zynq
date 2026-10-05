@@ -1,0 +1,39 @@
+#-----------------------------------------------------------
+# xsim v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Mon Oct  5 10:42:50 2026
+# Process ID         : 22964
+# Current directory  : <repo>
+# Command line       : xsim.exe -log tb/logs_long/e_w1920_h1080_f2_fullrate_noswap.log -mode tcl -source {xsim.dir/long1080p/xsim_script.tcl}
+# Log file           : <repo>/tb/logs_long/e_w1920_h1080_f2_fullrate_noswap.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
+# Platform           : Windows 11
+# Operating System   : 26300
+# Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
+# CPU Frequency      : 3194 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 51299 MB
+# Swap memory        : 21481 MB
+# Total Virtual      : 72780 MB
+# Available Virtual  : 8239 MB
+#-----------------------------------------------------------
+source xsim.dir/long1080p/xsim_script.tcl
+# xsim {long1080p} -testplusarg VEC=tb/vectors_w1920_h1080 -testplusarg FRAMES=2 -testplusarg FULLRATE -testplusarg NOSWAP -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+config: W=1920 H=1080 CW=11 frames=2 fullrate=1 adversarial=0 noswap=1 (long-run mode, 1 expected images loaded)
+latency frame1: first accepted input beat (cyc 13) to first output beat (cyc 1939) = 1926 cycles = 12.970 us at 148.5 MHz
+frame 1 (sobel): 0 mismatches / 2073600 px, 2076604 cycles first-in..last-out (1.0014 cyc/px)
+frame 2 (sobel): 0 mismatches / 2073600 px, 2076604 cycles first-in..last-out (1.0014 cyc/px)
+cycles/frame: min 2076604 max 2076604 mean 2076604.0; input stall cycles total 4078
+summary: 2 frames, 4147200 pixels checked, 0 mismatches, 0 kernel swaps, tlast count 2160 (exp 2160), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
+TB PASS: all 2 frames bit-exact (4147200 px, 0 kernel swaps)
+$finish called at time : 41532525 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:31 . Memory (MB): peak = 228.492 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 48040 KB (Peak: 48040 KB), Simulation CPU Usage: 30140 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:43:23 2026...

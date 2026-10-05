@@ -1,0 +1,43 @@
+#-----------------------------------------------------------
+# xsim v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Mon Oct  5 10:45:02 2026
+# Process ID         : 55024
+# Current directory  : <repo>
+# Command line       : xsim.exe -log tb/logs_long/d_w1920_h1080_f3_adversarial.log -mode tcl -source {xsim.dir/long1080p/xsim_script.tcl}
+# Log file           : <repo>/tb/logs_long/d_w1920_h1080_f3_adversarial.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
+# Platform           : Windows 11
+# Operating System   : 26300
+# Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
+# CPU Frequency      : 3194 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 51299 MB
+# Swap memory        : 21481 MB
+# Total Virtual      : 72780 MB
+# Available Virtual  : 8838 MB
+#-----------------------------------------------------------
+source xsim.dir/long1080p/xsim_script.tcl
+# xsim {long1080p} -testplusarg VEC=tb/vectors_w1920_h1080 -testplusarg FRAMES=3 -testplusarg ADVERSARIAL -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+config: W=1920 H=1080 CW=11 frames=3 fullrate=0 adversarial=1 noswap=0 (long-run mode, 3 expected images loaded)
+swap 1: scharr for frame 2 written during frame 1 at input row 2 (76 cycles, 19 writes, output stalled)
+swap 2: prewitt for frame 3 written during frame 2 at input row 348 (76 cycles, 19 writes, output stalled)
+latency frame1: first accepted input beat (cyc 13) to first output beat (cyc 4224) = 4211 cycles = 28.357 us at 148.5 MHz
+frame 1 (sobel): 0 mismatches / 2073600 px, 3058052 cycles first-in..last-out (1.4748 cyc/px)
+frame 2 (scharr): 0 mismatches / 2073600 px, 3059399 cycles first-in..last-out (1.4754 cyc/px)
+frame 3 (prewitt): 0 mismatches / 2073600 px, 3059511 cycles first-in..last-out (1.4755 cyc/px)
+cycles/frame: min 3058052 max 3059511 mean 3058987.3; input stall cycles total 812471
+adversarial: 6 long tready stalls (lengths 1081..1916), longest tready-low stretch 1919 cycles (1912 with an output beat pending); SOF held until the engine was idle for 1 frames, back-to-back for 1; tready low in the accept cycle for 2 of 3 SOF beats and 3 of 3 first-EOL beats; 11 input gaps >= 500 cycles (longest 1283); 2 of 2 kernel writes finished while the output was stalled
+summary: 3 frames, 6220800 pixels checked, 0 mismatches, 2 kernel swaps, tlast count 3240 (exp 3240), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
+TB PASS: all 3 frames bit-exact (6220800 px, 2 kernel swaps)
+$finish called at time : 91750975 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:50 . Memory (MB): peak = 228.371 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 46852 KB (Peak: 46852 KB), Simulation CPU Usage: 48796 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:45:54 2026...
