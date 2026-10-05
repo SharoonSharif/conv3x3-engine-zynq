@@ -3,23 +3,23 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Wed Sep 30 14:28:59 2026
-# Process ID         : 47676
+# Start of session at: Mon Oct  5 11:00:53 2026
+# Process ID         : 58156
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_ext/w1920_h1080_scharr_fullrate_midframe.log -mode tcl -source {xsim.dir/ext1080p/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_ext/w1920_h1080_scharr_fullrate_midframe.log
 # Journal file       : <repo>\xsim.jou
 # Running On         : <redacted>
 # Platform           : Windows 11
-# Operating System   : 26200
+# Operating System   : 26300
 # Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
 # CPU Frequency      : 3194 MHz
 # CPU Physical cores : 12
 # CPU Logical cores  : 24
 # Host memory        : 51299 MB
-# Swap memory        : 25019 MB
-# Total Virtual      : 76318 MB
-# Available Virtual  : 809 MB
+# Swap memory        : 21481 MB
+# Total Virtual      : 72780 MB
+# Available Virtual  : 9357 MB
 #-----------------------------------------------------------
 source xsim.dir/ext1080p/xsim_script.tcl
 # xsim {ext1080p} -testplusarg VEC=tb/vectors_w1920_h1080 -testplusarg CASE=scharr -testplusarg FULLRATE -testplusarg MIDFRAME -autoloadwcfg -runall
@@ -32,8 +32,8 @@ frame2 (scharr): 0 mismatches / 2073600 px
 throughput frame1: 2076604 cycles first-in..last-out for 2073600 px (1.0014 cyc/px); input stall cycles total 2156
 throughput frame2: 2076604 cycles first-in..last-out (1.0014 cyc/px)
 TB PASS: both frames bit-exact; tlast count = 2160 (exp 2160)
-$finish called at time : 41532295 ns : File "<repo>/tb/tb_engine_ext.v" Line 245
-run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:47 . Memory (MB): peak = 227.660 ; gain = 0.000
+$finish called at time : 41532295 ns : File "<repo>/tb/tb_engine_ext.v" Line 248
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:37 . Memory (MB): peak = 227.867 ; gain = 0.000
 exit
-INFO: xsimkernel Simulation Memory Usage: 32200 KB (Peak: 32200 KB), Simulation CPU Usage: 42014 ms
-INFO: [Common 17-206] Exiting xsim at Wed Sep 30 14:29:48 2026...
+INFO: xsimkernel Simulation Memory Usage: 31720 KB (Peak: 31720 KB), Simulation CPU Usage: 37234 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:01:32 2026...

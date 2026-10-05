@@ -10,6 +10,9 @@
 //   vvp eng.vvp +CFG=tb/vectors/cfg_scharr.hex +EXP2=tb/vectors/exp_scharr.hex
 // ---------------------------------------------------------------------------
 `timescale 1ns/1ps
+`ifndef TB_LB_BRAM
+  `define TB_LB_BRAM 0      // 1: block-RAM line buffers (LB_BRAM=1)
+`endif
 
 module tb_engine;
     localparam integer W = 160;
@@ -32,7 +35,7 @@ module tb_engine;
     reg  [7:0]  araddr = 0;  reg arvalid = 0;  wire arready;
     wire [31:0] rdata;       wire [1:0] rresp; wire rvalid; reg rready = 1;
 
-    conv3x3_engine #(.W(W), .H(H)) dut (
+    conv3x3_engine #(.W(W), .H(H), .LB_BRAM(`TB_LB_BRAM)) dut (
         .aclk(aclk), .aresetn(aresetn),
         .s_axis_tdata(s_tdata), .s_axis_tvalid(s_tvalid), .s_axis_tready(s_tready),
         .s_axis_tuser(s_tuser), .s_axis_tlast(s_tlast),

@@ -47,6 +47,12 @@ It reports cycles per frame and input stall cycles.
 
     tb\run_xsim_ext.bat      160x120 and 1920x16: 6 kernels mid-frame, full-rate and EN-pause runs
     tb\run_xsim_1080p.bat    1920x1080, Scharr, full rate + mid-frame
+    tb\run_xsim_bram.bat     the engine runs of all three scripts again with the
+                             block-RAM line buffers (-d "TB_LB_BRAM=1" -> DUT
+                             parameter LB_BRAM = 1); logs in tb/logs_bram/
+
+Both testbenches accept `-d TB_LB_BRAM=<0|1>` (default 0) and pass it to the
+DUT's `LB_BRAM` parameter.
 
 ## Recorded results (xsim 2026.1, 2026-09-30): 25 runs, all TB PASS
 
