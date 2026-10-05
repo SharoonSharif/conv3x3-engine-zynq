@@ -109,8 +109,8 @@ depth.
   frame commits at the start of frame, the frame in flight is never affected).
   184 swaps were performed in all; in runs a and b 41 of them were written at
   input row 0 (inside the start-of-frame output stall) and 28 at the last row.
-* The 25 existing runs (`tbun_xsim.bat`, `tbun_xsim_ext.bat`,
-  `tbun_xsim_1080p.bat`) were re-run with the extended testbench on the
+* The 25 existing runs (`tb\run_xsim.bat`, `tb\run_xsim_ext.bat`,
+  `tb\run_xsim_1080p.bat`) were re-run with the extended testbench on the
   same day: all TB PASS with the numbers recorded in `tb/README.md`; the
   `tb/logs_ext` logs were regenerated (they now also carry the latency line).
 * Memory: xsim peaked at about 230 MB for the 1920x1080 runs (the testbench
