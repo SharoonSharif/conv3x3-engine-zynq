@@ -19,7 +19,7 @@ Timing is met (TNS 0, 0 failing endpoints). The worst path is now
 `g_lb_bram.brow_q_reg -> LUT3 -> pr1_reg[8]/A` (the bottom-row tap select
 in front of a DSP48E1 whose multiplier is unregistered on the A input),
 2.68 ns data path; the column-counter-to-LUTRAM-decode path of the LUTRAM
-build is gone. 190 FFs disappear because the two 8-bit read registers are
+build is gone. 192 FFs disappear because the two 8-bit read registers are
 absorbed into the block RAMs and the LUTRAM write-enable/decode fan-out
 replication is no longer needed.
 

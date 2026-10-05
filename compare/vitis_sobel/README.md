@@ -117,3 +117,11 @@ Like the `filter2D` baseline, the HLS core restarts per frame under HLS
 block-level control (`ap_start`, or auto-restart) and carries an AXI4-Lite
 control block that `sobel_fixed` does not have (`sobel_fixed` has no
 programmable state at all).
+
+## Archived HLS loop reports and C-simulation log
+
+`reports/xFSobelFilter3x3_*_csynth.rpt` (the library kernel; its `Row_Loop`
+entry carries the 1,934 cycles per 1920-pixel row behind the 0.993
+pixel/clock figure), `reports/Sobel_*_s_csynth.rpt`, `reports/sobel_combine*_csynth.rpt`
+and `reports/csim_console.txt` (the C-simulation output: 0 mismatches on
+18,644 interior pixels) were added on 2026-10-05.

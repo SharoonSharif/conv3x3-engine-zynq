@@ -1,0 +1,183 @@
+
+
+================================================================
+== Vitis HLS Report for 'Sobel_0_3_0_3_1080_1920_1_false_2_2_2_s'
+================================================================
+* Date:           Mon Oct  5 10:30:55 2026
+
+* Version:        2026.1 (Build 6493734 on Jun 16 2026)
+* Project:        hls_prj
+* Solution:       sol (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  6.73 ns|  6.481 ns|     1.82 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+---------+---------+---------+
+    |  Latency (cycles) |   Latency (absolute)  |      Interval     | Pipeline|
+    |   min   |   max   |    min    |    max    |   min   |   max   |   Type  |
+    +---------+---------+-----------+-----------+---------+---------+---------+
+    |  2090648|  2090648|  14.078 ms|  14.078 ms|  2090648|  2090648|       no|
+    +---------+---------+-----------+-----------+---------+---------+---------+
+
+    + Detail: 
+        * Instance: 
+        +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+---------+-----------+-----------+---------+---------+---------+
+        |                                                                         |                                                               |  Latency (cycles) |   Latency (absolute)  |      Interval     | Pipeline|
+        |                                 Instance                                |                             Module                            |   min   |   max   |    min    |    max    |   min   |   max   |   Type  |
+        +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+---------+-----------+-----------+---------+---------+---------+
+        |grp_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s_fu_68  |xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s  |  2090646|  2090646|  14.078 ms|  14.078 ms|  2090646|  2090646|       no|
+        +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+---------+-----------+-----------+---------+---------+---------+
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|      2|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        3|    -|     640|   1121|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     74|    -|
+|Register         |        -|    -|      28|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        3|    0|     668|   1197|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        1|    0|      ~0|      2|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+----+-----+------+-----+
+    |                                 Instance                                |                             Module                            | BRAM_18K| DSP|  FF |  LUT | URAM|
+    +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+----+-----+------+-----+
+    |grp_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s_fu_68  |xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s  |        3|   0|  640|  1121|    0|
+    +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+----+-----+------+-----+
+    |Total                                                                    |                                                               |        3|   0|  640|  1121|    0|
+    +-------------------------------------------------------------------------+---------------------------------------------------------------+---------+----+-----+------+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-----------------+----------+----+---+----+------------+------------+
+    |  Variable Name  | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |ap_block_state1  |        or|   0|  0|   2|           1|           1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |Total            |          |   0|  0|   2|           1|           1|
+    +-----------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------------+----+-----------+-----+-----------+
+    |           Name           | LUT| Input Size| Bits| Total Bits|
+    +--------------------------+----+-----------+-----+-----------+
+    |ap_NS_fsm                 |  20|          4|    1|          4|
+    |ap_done                   |   9|          2|    1|          2|
+    |cols_c5_blk_n             |   9|          2|    1|          2|
+    |p_src_mat_cols_val_blk_n  |   9|          2|    1|          2|
+    |p_src_mat_rows_val_blk_n  |   9|          2|    1|          2|
+    |real_start                |   9|          2|    1|          2|
+    |rows_c3_blk_n             |   9|          2|    1|          2|
+    +--------------------------+----+-----------+-----+-----------+
+    |Total                     |  74|         16|    7|         16|
+    +--------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +--------------------------------------------------------------------------------------+----+----+-----+-----------+
+    |                                         Name                                         | FF | LUT| Bits| Const Bits|
+    +--------------------------------------------------------------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                                                                             |   3|   0|    3|          0|
+    |ap_done_reg                                                                           |   1|   0|    1|          0|
+    |empty_61_reg_93                                                                       |  11|   0|   11|          0|
+    |empty_reg_88                                                                          |  11|   0|   11|          0|
+    |grp_xFSobelFilter3x3_0_3_1080_1920_1_0_4_1_2_2_2_1_6_1920_false_s_fu_68_ap_start_reg  |   1|   0|    1|          0|
+    |start_once_reg                                                                        |   1|   0|    1|          0|
+    +--------------------------------------------------------------------------------------+----+----+-----+-----------+
+    |Total                                                                                 |  28|   0|   28|          0|
+    +--------------------------------------------------------------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-----------------------------------+-----+-----+------------+--------------------------------------------------+--------------+
+|             RTL Ports             | Dir | Bits|  Protocol  |                   Source Object                  |    C Type    |
++-----------------------------------+-----+-----+------------+--------------------------------------------------+--------------+
+|ap_clk                             |   in|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_rst                             |   in|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_start                           |   in|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|start_full_n                       |   in|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_done                            |  out|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_continue                        |   in|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_idle                            |  out|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|ap_ready                           |  out|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|start_out                          |  out|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|start_write                        |  out|    1|  ap_ctrl_hs|  Sobel<0, 3, 0, 3, 1080, 1920, 1, false, 2, 2, 2>|  return value|
+|p_src_mat_rows_val_dout            |   in|   32|     ap_fifo|                                p_src_mat_rows_val|       pointer|
+|p_src_mat_rows_val_empty_n         |   in|    1|     ap_fifo|                                p_src_mat_rows_val|       pointer|
+|p_src_mat_rows_val_read            |  out|    1|     ap_fifo|                                p_src_mat_rows_val|       pointer|
+|p_src_mat_rows_val_num_data_valid  |   in|    3|     ap_fifo|                                p_src_mat_rows_val|       pointer|
+|p_src_mat_rows_val_fifo_cap        |   in|    3|     ap_fifo|                                p_src_mat_rows_val|       pointer|
+|p_src_mat_cols_val_dout            |   in|   32|     ap_fifo|                                p_src_mat_cols_val|       pointer|
+|p_src_mat_cols_val_empty_n         |   in|    1|     ap_fifo|                                p_src_mat_cols_val|       pointer|
+|p_src_mat_cols_val_read            |  out|    1|     ap_fifo|                                p_src_mat_cols_val|       pointer|
+|p_src_mat_cols_val_num_data_valid  |   in|    3|     ap_fifo|                                p_src_mat_cols_val|       pointer|
+|p_src_mat_cols_val_fifo_cap        |   in|    3|     ap_fifo|                                p_src_mat_cols_val|       pointer|
+|src_data_dout                      |   in|    8|     ap_fifo|                                          src_data|       pointer|
+|src_data_empty_n                   |   in|    1|     ap_fifo|                                          src_data|       pointer|
+|src_data_read                      |  out|    1|     ap_fifo|                                          src_data|       pointer|
+|src_data_num_data_valid            |   in|    3|     ap_fifo|                                          src_data|       pointer|
+|src_data_fifo_cap                  |   in|    3|     ap_fifo|                                          src_data|       pointer|
+|gx_data_din                        |  out|   16|     ap_fifo|                                           gx_data|       pointer|
+|gx_data_full_n                     |   in|    1|     ap_fifo|                                           gx_data|       pointer|
+|gx_data_write                      |  out|    1|     ap_fifo|                                           gx_data|       pointer|
+|gx_data_num_data_valid             |   in|    3|     ap_fifo|                                           gx_data|       pointer|
+|gx_data_fifo_cap                   |   in|    3|     ap_fifo|                                           gx_data|       pointer|
+|gy_data_din                        |  out|   16|     ap_fifo|                                           gy_data|       pointer|
+|gy_data_full_n                     |   in|    1|     ap_fifo|                                           gy_data|       pointer|
+|gy_data_write                      |  out|    1|     ap_fifo|                                           gy_data|       pointer|
+|gy_data_num_data_valid             |   in|    3|     ap_fifo|                                           gy_data|       pointer|
+|gy_data_fifo_cap                   |   in|    3|     ap_fifo|                                           gy_data|       pointer|
+|rows_c3_din                        |  out|   32|     ap_fifo|                                           rows_c3|       pointer|
+|rows_c3_full_n                     |   in|    1|     ap_fifo|                                           rows_c3|       pointer|
+|rows_c3_write                      |  out|    1|     ap_fifo|                                           rows_c3|       pointer|
+|rows_c3_num_data_valid             |   in|    3|     ap_fifo|                                           rows_c3|       pointer|
+|rows_c3_fifo_cap                   |   in|    3|     ap_fifo|                                           rows_c3|       pointer|
+|cols_c5_din                        |  out|   32|     ap_fifo|                                           cols_c5|       pointer|
+|cols_c5_full_n                     |   in|    1|     ap_fifo|                                           cols_c5|       pointer|
+|cols_c5_write                      |  out|    1|     ap_fifo|                                           cols_c5|       pointer|
+|cols_c5_num_data_valid             |   in|    3|     ap_fifo|                                           cols_c5|       pointer|
+|cols_c5_fifo_cap                   |   in|    3|     ap_fifo|                                           cols_c5|       pointer|
++-----------------------------------+-----+-----+------------+--------------------------------------------------+--------------+
+

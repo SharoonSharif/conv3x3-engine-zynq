@@ -1,0 +1,157 @@
+
+
+================================================================
+== Vitis HLS Report for 'xFSobelFilter3x3_Pipeline_Clear_Row_Loop'
+================================================================
+* Date:           Mon Oct  5 10:30:53 2026
+
+* Version:        2026.1 (Build 6493734 on Jun 16 2026)
+* Project:        hls_prj
+* Solution:       sol (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  6.73 ns|  4.815 ns|     1.82 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+-------------------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval |      Pipeline     |
+    |   min   |   max   |    min    |    max    | min | max |        Type       |
+    +---------+---------+-----------+-----------+-----+-----+-------------------+
+    |     1923|     1923|  12.949 us|  12.949 us|    0|    0|  loop pipeline stp|
+    +---------+---------+-----------+-----------+-----+-----+-------------------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |                  |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        |     Loop Name    |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |- Clear_Row_Loop  |     1921|     1921|         3|          1|        N/A|  1920|       yes|
+        +------------------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|     28|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        -|    -|       -|      -|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     45|    -|
+|Register         |        -|    -|      47|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        0|    0|      47|     73|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        0|    0|      ~0|     ~0|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +---------------------------+----------+----+---+----+------------+------------+
+    |       Variable Name       | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +---------------------------+----------+----+---+----+------------+------------+
+    |col_4_fu_117_p2            |         +|   0|  0|  12|          11|           1|
+    |ap_block_pp0_stage0_11001  |       and|   0|  0|   2|           1|           1|
+    |icmp_ln355_fu_111_p2       |      icmp|   0|  0|  12|          11|          11|
+    |ap_enable_pp0              |       xor|   0|  0|   2|           1|           2|
+    +---------------------------+----------+----+---+----+------------+------------+
+    |Total                      |          |   0|  0|  28|          24|          15|
+    +---------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-------------------------+----+-----------+-----+-----------+
+    |           Name          | LUT| Input Size| Bits| Total Bits|
+    +-------------------------+----+-----------+-----+-----------+
+    |ap_done_int              |   9|          2|    1|          2|
+    |ap_enable_reg_pp0_iter1  |   9|          2|    1|          2|
+    |ap_sig_allocacmp_col_3   |   9|          2|   11|         22|
+    |col_fu_52                |   9|          2|   11|         22|
+    |src_data_blk_n           |   9|          2|    1|          2|
+    +-------------------------+----+-----------+-----+-----------+
+    |Total                    |  45|         10|   25|         50|
+    +-------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-------------------------------------------+----+----+-----+-----------+
+    |                    Name                   | FF | LUT| Bits| Const Bits|
+    +-------------------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                                  |   1|   0|    1|          0|
+    |ap_block_pp0_stage0_subdone_grp0_done_reg  |   1|   0|    1|          0|
+    |ap_done_reg                                |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1                    |   1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter2                    |   1|   0|    1|          0|
+    |ap_loop_exit_ready_pp0_iter1_reg           |   1|   0|    1|          0|
+    |col_3_reg_139                              |  11|   0|   11|          0|
+    |col_fu_52                                  |  11|   0|   11|          0|
+    |src_data_read_reg_153                      |   8|   0|    8|          0|
+    |zext_ln361_reg_148                         |  11|   0|   64|         53|
+    +-------------------------------------------+----+----+-----+-----------+
+    |Total                                      |  47|   0|  100|         53|
+    +-------------------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-------------------------+-----+-----+------------+------------------------------------------+--------------+
+|        RTL Ports        | Dir | Bits|  Protocol  |               Source Object              |    C Type    |
++-------------------------+-----+-----+------------+------------------------------------------+--------------+
+|ap_clk                   |   in|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|ap_rst                   |   in|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|ap_start                 |   in|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|ap_done                  |  out|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|ap_idle                  |  out|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|ap_ready                 |  out|    1|  ap_ctrl_hs|  xFSobelFilter3x3_Pipeline_Clear_Row_Loop|  return value|
+|src_data_dout            |   in|    8|     ap_fifo|                                  src_data|       pointer|
+|src_data_empty_n         |   in|    1|     ap_fifo|                                  src_data|       pointer|
+|src_data_read            |  out|    1|     ap_fifo|                                  src_data|       pointer|
+|src_data_num_data_valid  |   in|    3|     ap_fifo|                                  src_data|       pointer|
+|src_data_fifo_cap        |   in|    3|     ap_fifo|                                  src_data|       pointer|
+|img_width                |   in|   11|     ap_none|                                 img_width|        scalar|
+|buf_1_address1           |  out|   11|   ap_memory|                                     buf_1|         array|
+|buf_1_ce1                |  out|    1|   ap_memory|                                     buf_1|         array|
+|buf_1_we1                |  out|    1|   ap_memory|                                     buf_1|         array|
+|buf_1_d1                 |  out|    8|   ap_memory|                                     buf_1|         array|
+|buf_r_address1           |  out|   11|   ap_memory|                                     buf_r|         array|
+|buf_r_ce1                |  out|    1|   ap_memory|                                     buf_r|         array|
+|buf_r_we1                |  out|    1|   ap_memory|                                     buf_r|         array|
+|buf_r_d1                 |  out|    8|   ap_memory|                                     buf_r|         array|
++-------------------------+-----+-----+------------+------------------------------------------+--------------+
+

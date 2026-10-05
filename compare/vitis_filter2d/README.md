@@ -55,3 +55,5 @@ The HLS core keeps its line buffers in block RAM and has no dual-kernel
 magnitude mode. It also restarts per frame under HLS block-level control
 (`ap_start`, or auto-restart). The engine stores its line buffers in
 distributed RAM and computes two kernels per pixel.
+
+`reports/csim_console.txt` holds the C-simulation output (0 mismatches on 18,644 interior pixels for sharpen and Gaussian), added 2026-10-05.

@@ -114,7 +114,7 @@ log per run in `results/sensitivity_logs/`.
 float64. The float64 column is exactly independent of k (the per-image max
 normalization cancels the 2^k scale), so k only acts on the fixed path.
 
-* **At the natural scale the fixed/float64 ODS gap is ≤ 0.0005 for all three
+* **At the natural scale the fixed/float64 ODS gap is ≤ 0.0006 for all three
   kernels** (OIS −0.001 … −0.002, Pratt +0.002 … +0.013). The kernel family
   moves ODS by at most 0.006 (Prewitt 0.592, Sobel 0.589, Scharr 0.586).
 * **k above the natural scale** (Sobel k = 4, 5: 7- and 6-bit magnitudes, no

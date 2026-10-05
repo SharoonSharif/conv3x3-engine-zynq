@@ -1,0 +1,192 @@
+
+
+================================================================
+== Vitis HLS Report for 'sobel_combine'
+================================================================
+* Date:           Mon Oct  5 10:30:55 2026
+
+* Version:        2026.1 (Build 6493734 on Jun 16 2026)
+* Project:        hls_prj
+* Solution:       sol (Vivado IP Flow Target)
+* Product family: zynq
+* Target device:  xc7z020-clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  6.73 ns|  4.916 ns|     1.82 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+---------+---------+
+    |  Latency (cycles) |   Latency (absolute)  |    Interval   | Pipeline|
+    |   min   |   max   |    min    |    max    | min |   max   |   Type  |
+    +---------+---------+-----------+-----------+-----+---------+---------+
+    |        8|  2080081|  53.872 ns|  14.007 ms|    8|  2080081|       no|
+    +---------+---------+-----------+-----------+-----+---------+---------+
+
+    + Detail: 
+        * Instance: 
+        +-------------------------------------------+---------------------------------+---------+---------+-----------+-----------+-----+-----+-------------------+
+        |                                           |                                 |  Latency (cycles) |   Latency (absolute)  |  Interval |      Pipeline     |
+        |                  Instance                 |              Module             |   min   |   max   |    min    |    max    | min | max |        Type       |
+        +-------------------------------------------+---------------------------------+---------+---------+-----------+-----------+-----+-----+-------------------+
+        |grp_sobel_combine_Pipeline_COL_LOOP_fu_90  |sobel_combine_Pipeline_COL_LOOP  |        5|     1924|  33.670 ns|  12.956 us|    0|    0|  loop pipeline stp|
+        +-------------------------------------------+---------------------------------+---------+---------+-----------+-----------+-----+-----+-------------------+
+
+        * Loop: 
+        +------------+---------+---------+----------+-----------+-----------+----------+----------+
+        |            |  Latency (cycles) | Iteration|  Initiation Interval  |   Trip   |          |
+        |  Loop Name |   min   |   max   |  Latency |  achieved |   target  |   Count  | Pipelined|
+        +------------+---------+---------+----------+-----------+-----------+----------+----------+
+        |- ROW_LOOP  |        7|  2080080|  7 ~ 1926|          -|          -|  1 ~ 1080|        no|
+        +------------+---------+---------+----------+-----------+-----------+----------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-----+--------+-------+-----+
+|       Name      | BRAM_18K| DSP |   FF   |  LUT  | URAM|
++-----------------+---------+-----+--------+-------+-----+
+|DSP              |        -|    -|       -|      -|    -|
+|Expression       |        -|    -|       0|     26|    -|
+|FIFO             |        -|    -|       -|      -|    -|
+|Instance         |        -|    -|      93|    229|    -|
+|Memory           |        -|    -|       -|      -|    -|
+|Multiplexer      |        -|    -|       0|     83|    -|
+|Register         |        -|    -|      39|      -|    -|
++-----------------+---------+-----+--------+-------+-----+
+|Total            |        0|    0|     132|    338|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Available        |      280|  220|  106400|  53200|    0|
++-----------------+---------+-----+--------+-------+-----+
+|Utilization (%)  |        0|    0|      ~0|     ~0|    0|
++-----------------+---------+-----+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +-------------------------------------------+---------------------------------+---------+----+----+-----+-----+
+    |                  Instance                 |              Module             | BRAM_18K| DSP| FF | LUT | URAM|
+    +-------------------------------------------+---------------------------------+---------+----+----+-----+-----+
+    |grp_sobel_combine_Pipeline_COL_LOOP_fu_90  |sobel_combine_Pipeline_COL_LOOP  |        0|   0|  93|  229|    0|
+    +-------------------------------------------+---------------------------------+---------+----+----+-----+-----+
+    |Total                                      |                                 |        0|   0|  93|  229|    0|
+    +-------------------------------------------+---------------------------------+---------+----+----+-----+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +---------------------+----------+----+---+----+------------+------------+
+    |    Variable Name    | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +---------------------+----------+----+---+----+------------+------------+
+    |r_2_fu_122_p2        |         +|   0|  0|  12|          11|           1|
+    |icmp_ln31_fu_117_p2  |      icmp|   0|  0|  12|          11|          11|
+    |ap_block_state1      |        or|   0|  0|   2|           1|           1|
+    +---------------------+----------+----+---+----+------------+------------+
+    |Total                |          |   0|  0|  26|          23|          13|
+    +---------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------+----+-----------+-----+-----------+
+    |     Name     | LUT| Input Size| Bits| Total Bits|
+    +--------------+----+-----------+-----+-----------+
+    |ap_NS_fsm     |  20|          4|    1|          4|
+    |ap_done       |   9|          2|    1|          2|
+    |cols_blk_n    |   9|          2|    1|          2|
+    |cols_c_blk_n  |   9|          2|    1|          2|
+    |r_fu_58       |   9|          2|   11|         22|
+    |real_start    |   9|          2|    1|          2|
+    |rows_blk_n    |   9|          2|    1|          2|
+    |rows_c_blk_n  |   9|          2|    1|          2|
+    +--------------+----+-----------+-----+-----------+
+    |Total         |  83|         18|   18|         38|
+    +--------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +--------------------------------------------------------+----+----+-----+-----------+
+    |                          Name                          | FF | LUT| Bits| Const Bits|
+    +--------------------------------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                                               |   3|   0|    3|          0|
+    |ap_done_reg                                             |   1|   0|    1|          0|
+    |empty_44_reg_145                                        |  11|   0|   11|          0|
+    |empty_reg_140                                           |  11|   0|   11|          0|
+    |grp_sobel_combine_Pipeline_COL_LOOP_fu_90_ap_start_reg  |   1|   0|    1|          0|
+    |r_fu_58                                                 |  11|   0|   11|          0|
+    |start_once_reg                                          |   1|   0|    1|          0|
+    +--------------------------------------------------------+----+----+-----+-----------+
+    |Total                                                   |  39|   0|   39|          0|
+    +--------------------------------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-------------------------+-----+-----+------------+---------------+--------------+
+|        RTL Ports        | Dir | Bits|  Protocol  | Source Object |    C Type    |
++-------------------------+-----+-----+------------+---------------+--------------+
+|ap_clk                   |   in|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_rst                   |   in|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_start                 |   in|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|start_full_n             |   in|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_done                  |  out|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_continue              |   in|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_idle                  |  out|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|ap_ready                 |  out|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|start_out                |  out|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|start_write              |  out|    1|  ap_ctrl_hs|  sobel_combine|  return value|
+|gx_data_dout             |   in|   16|     ap_fifo|        gx_data|       pointer|
+|gx_data_empty_n          |   in|    1|     ap_fifo|        gx_data|       pointer|
+|gx_data_read             |  out|    1|     ap_fifo|        gx_data|       pointer|
+|gx_data_num_data_valid   |   in|    3|     ap_fifo|        gx_data|       pointer|
+|gx_data_fifo_cap         |   in|    3|     ap_fifo|        gx_data|       pointer|
+|gy_data_dout             |   in|   16|     ap_fifo|        gy_data|       pointer|
+|gy_data_empty_n          |   in|    1|     ap_fifo|        gy_data|       pointer|
+|gy_data_read             |  out|    1|     ap_fifo|        gy_data|       pointer|
+|gy_data_num_data_valid   |   in|    3|     ap_fifo|        gy_data|       pointer|
+|gy_data_fifo_cap         |   in|    3|     ap_fifo|        gy_data|       pointer|
+|dst_data_din             |  out|    8|     ap_fifo|       dst_data|       pointer|
+|dst_data_full_n          |   in|    1|     ap_fifo|       dst_data|       pointer|
+|dst_data_write           |  out|    1|     ap_fifo|       dst_data|       pointer|
+|dst_data_num_data_valid  |   in|   32|     ap_fifo|       dst_data|       pointer|
+|dst_data_fifo_cap        |   in|   32|     ap_fifo|       dst_data|       pointer|
+|rows_dout                |   in|   32|     ap_fifo|           rows|       pointer|
+|rows_empty_n             |   in|    1|     ap_fifo|           rows|       pointer|
+|rows_read                |  out|    1|     ap_fifo|           rows|       pointer|
+|rows_num_data_valid      |   in|    3|     ap_fifo|           rows|       pointer|
+|rows_fifo_cap            |   in|    3|     ap_fifo|           rows|       pointer|
+|cols_dout                |   in|   32|     ap_fifo|           cols|       pointer|
+|cols_empty_n             |   in|    1|     ap_fifo|           cols|       pointer|
+|cols_read                |  out|    1|     ap_fifo|           cols|       pointer|
+|cols_num_data_valid      |   in|    3|     ap_fifo|           cols|       pointer|
+|cols_fifo_cap            |   in|    3|     ap_fifo|           cols|       pointer|
+|rows_c_din               |  out|   32|     ap_fifo|         rows_c|       pointer|
+|rows_c_full_n            |   in|    1|     ap_fifo|         rows_c|       pointer|
+|rows_c_write             |  out|    1|     ap_fifo|         rows_c|       pointer|
+|rows_c_num_data_valid    |   in|    3|     ap_fifo|         rows_c|       pointer|
+|rows_c_fifo_cap          |   in|    3|     ap_fifo|         rows_c|       pointer|
+|cols_c_din               |  out|   32|     ap_fifo|         cols_c|       pointer|
+|cols_c_full_n            |   in|    1|     ap_fifo|         cols_c|       pointer|
+|cols_c_write             |  out|    1|     ap_fifo|         cols_c|       pointer|
+|cols_c_num_data_valid    |   in|    3|     ap_fifo|         cols_c|       pointer|
+|cols_c_fifo_cap          |   in|    3|     ap_fifo|         cols_c|       pointer|
++-------------------------+-----+-----+------------+---------------+--------------+
+

@@ -40,3 +40,10 @@ coefficients + CTRL); the testbenches measure it at 76 `aclk` cycles (see
 * Release v1.1.0 and earlier had no SIGNED bit, and EN = 0 was sticky
   until reset (EN was shadowed like the other fields, so input could never
   resume). Both were changed on 2026-09-30.
+* A CTRL write updates all four fields at once; to change EN alone, read
+  CTRL back (it returns the shadow values) and rewrite it with the other
+  fields unchanged. Any write, including such an EN toggle, sets PENDING.
+* Corner case: PENDING is cleared one cycle after the SOF-accept edge. A
+  write whose response lands in the SOF-accept cycle or the cycle after it
+  is applied at the *next* SOF (no frame is torn) but PENDING reads 0 in the
+  meantime. Poll BUSY as well if a strict handshake is needed.
