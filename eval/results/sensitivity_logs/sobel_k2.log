@@ -1,0 +1,6 @@
+$ <repo>\eval\bsds_eval.py <repo>/data/BSDS500/BSR/BSDS500/data --subset all --out <repo>/eval/results --kernel sobel --k 2
+fixed    ODS F=0.590 (P=0.476, R=0.776, t=0.24)  OIS F=0.600  Pratt=0.300 +/- 0.112  [200 images, sobel k=2]
+float64  ODS F=0.589 (P=0.480, R=0.761, t=0.22)  OIS F=0.600  Pratt=0.291 +/- 0.106  [200 images, sobel k=2]
+fixed    saturation (clipped before NMS): 15860/30880200 = 0.000514  (per-image mean 0.000514, max 0.007098; at 255: 0.000536)
+wrote <repo>/eval/results\bsds500_test_all_sobel_k2.json
+exit 0 after 481 s
