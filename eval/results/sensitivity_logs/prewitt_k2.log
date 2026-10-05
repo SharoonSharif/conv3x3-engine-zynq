@@ -1,0 +1,6 @@
+$ <repo>\eval\bsds_eval.py <repo>/data/BSDS500/BSR/BSDS500/data --subset all --out <repo>/eval/results --kernel prewitt --k 2
+fixed    ODS F=0.592 (P=0.476, R=0.783, t=0.22)  OIS F=0.601  Pratt=0.316 +/- 0.111  [200 images, prewitt k=2]
+float64  ODS F=0.592 (P=0.481, R=0.769, t=0.23)  OIS F=0.602  Pratt=0.305 +/- 0.110  [200 images, prewitt k=2]
+fixed    saturation (clipped before NMS): 0/30880200 = 0.000000  (per-image mean 0.000000, max 0.000000; at 255: 0.000000)
+wrote <repo>/eval/results\bsds500_test_all_prewitt_k2.json
+exit 0 after 514 s

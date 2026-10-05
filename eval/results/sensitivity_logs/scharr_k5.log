@@ -1,0 +1,6 @@
+$ <repo>\eval\bsds_eval.py <repo>/data/BSDS500/BSR/BSDS500/data --subset all --out <repo>/eval/results --kernel scharr --k 5
+fixed    ODS F=0.586 (P=0.470, R=0.778, t=0.20)  OIS F=0.595  Pratt=0.297 +/- 0.105  [200 images, scharr k=5]
+float64  ODS F=0.586 (P=0.469, R=0.780, t=0.20)  OIS F=0.597  Pratt=0.295 +/- 0.105  [200 images, scharr k=5]
+fixed    saturation (clipped before NMS): 0/30880200 = 0.000000  (per-image mean 0.000000, max 0.000000; at 255: 0.000000)
+wrote <repo>/eval/results\bsds500_test_all_scharr_k5.json
+exit 0 after 400 s
