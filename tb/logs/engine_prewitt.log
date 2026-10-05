@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:59:39 2026
-# Process ID         : 24600
+# Start of session at: Mon Oct  5 11:07:53 2026
+# Process ID         : 47628
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs/engine_prewitt.log -mode tcl -source {xsim.dir/eng_sim/xsim_script.tcl}
 # Log file           : <repo>/tb/logs/engine_prewitt.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 10936 MB
+# Available Virtual  : 11866 MB
 #-----------------------------------------------------------
 source xsim.dir/eng_sim/xsim_script.tcl
 # xsim {eng_sim} -testplusarg CFG=tb/vectors/cfg_prewitt.hex -testplusarg EXP2=tb/vectors/exp_prewitt.hex -autoloadwcfg -runall
@@ -31,4 +31,4 @@ frame2 (swapped kernel): 0 mismatches / 19200 px
 TB PASS: both frames bit-exact; tlast count = 240 (exp 240)
 $finish called at time : 945495 ns : File "<repo>/tb/tb_engine.v" Line 190
 exit
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:59:41 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:07:56 2026...

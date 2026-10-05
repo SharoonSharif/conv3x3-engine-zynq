@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:47:05 2026
-# Process ID         : 57464
+# Start of session at: Mon Oct  5 11:08:34 2026
+# Process ID         : 53156
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_ext/w1920_laplacian_midframe.log -mode tcl -source {xsim.dir/ext1920/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_ext/w1920_laplacian_midframe.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 10801 MB
+# Available Virtual  : 11380 MB
 #-----------------------------------------------------------
 source xsim.dir/ext1920/xsim_script.tcl
 # xsim {ext1920} -testplusarg VEC=tb/vectors_w1920_h16 -testplusarg CASE=laplacian -testplusarg MIDFRAME -autoloadwcfg -runall
@@ -33,6 +33,6 @@ frame2 (laplacian): 0 mismatches / 30720 px
 throughput frame1: 47252 cycles first-in..last-out for 30720 px (1.5382 cyc/px); input stall cycles total 7615
 throughput frame2: 47122 cycles first-in..last-out (1.5339 cyc/px)
 TB PASS: both frames bit-exact; tlast count = 32 (exp 32)
-$finish called at time : 943985 ns : File "<repo>/tb/tb_engine_ext.v" Line 486
+$finish called at time : 943985 ns : File "<repo>/tb/tb_engine_ext.v" Line 489
 exit
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:47:07 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:08:37 2026...

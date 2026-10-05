@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:59:48 2026
-# Process ID         : 55492
+# Start of session at: Mon Oct  5 11:08:01 2026
+# Process ID         : 27768
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs/sobel_fixed.log -mode tcl -source {xsim.dir/sob_sim/xsim_script.tcl}
 # Log file           : <repo>/tb/logs/sobel_fixed.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 10684 MB
+# Available Virtual  : 11836 MB
 #-----------------------------------------------------------
 source xsim.dir/sob_sim/xsim_script.tcl
 # xsim {sob_sim} -autoloadwcfg -runall
@@ -28,4 +28,4 @@ run -all
 TB PASS: sobel_fixed bit-exact over 19200 px; tlast count = 120 (exp 120)
 $finish called at time : 468790 ns : File "<repo>/tb/tb_sobel_fixed.v" Line 100
 exit
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:59:50 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:08:04 2026...

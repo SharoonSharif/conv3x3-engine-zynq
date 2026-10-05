@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:42:50 2026
-# Process ID         : 22964
+# Start of session at: Mon Oct  5 11:10:14 2026
+# Process ID         : 53156
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_long/e_w1920_h1080_f2_fullrate_noswap.log -mode tcl -source {xsim.dir/long1080p/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_long/e_w1920_h1080_f2_fullrate_noswap.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 8239 MB
+# Available Virtual  : 12044 MB
 #-----------------------------------------------------------
 source xsim.dir/long1080p/xsim_script.tcl
 # xsim {long1080p} -testplusarg VEC=tb/vectors_w1920_h1080 -testplusarg FRAMES=2 -testplusarg FULLRATE -testplusarg NOSWAP -autoloadwcfg -runall
@@ -32,8 +32,8 @@ frame 2 (sobel): 0 mismatches / 2073600 px, 2076604 cycles first-in..last-out (1
 cycles/frame: min 2076604 max 2076604 mean 2076604.0; input stall cycles total 4078
 summary: 2 frames, 4147200 pixels checked, 0 mismatches, 0 kernel swaps, tlast count 2160 (exp 2160), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
 TB PASS: all 2 frames bit-exact (4147200 px, 0 kernel swaps)
-$finish called at time : 41532525 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
-run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:31 . Memory (MB): peak = 228.492 ; gain = 0.000
+$finish called at time : 41532525 ns : File "<repo>/tb/tb_engine_ext.v" Line 472
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:16 . Memory (MB): peak = 229.281 ; gain = 0.000
 exit
-INFO: xsimkernel Simulation Memory Usage: 48040 KB (Peak: 48040 KB), Simulation CPU Usage: 30140 ms
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:43:23 2026...
+INFO: xsimkernel Simulation Memory Usage: 48036 KB (Peak: 48036 KB), Simulation CPU Usage: 16343 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:10:32 2026...

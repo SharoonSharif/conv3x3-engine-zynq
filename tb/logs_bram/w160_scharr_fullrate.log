@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:56:24 2026
-# Process ID         : 3080
+# Start of session at: Mon Oct  5 11:13:01 2026
+# Process ID         : 50496
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_bram/w160_scharr_fullrate.log -mode tcl -source {xsim.dir/ext160_bram/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_bram/w160_scharr_fullrate.log
@@ -19,19 +19,20 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 8610 MB
+# Available Virtual  : 12294 MB
 #-----------------------------------------------------------
 source xsim.dir/ext160_bram/xsim_script.tcl
 # xsim {ext160_bram} -testplusarg VEC=tb/vectors -testplusarg CASE=scharr -testplusarg FULLRATE -autoloadwcfg -runall
 Time resolution is 1 ps
 run -all
-config: W=160 H=120 CW=9 case=scharr fullrate=1 midframe=0 enpause=0
+config: W=160 H=120 CW=9 case=scharr fullrate=1 midframe=0 enpause=0 adversarial=0
 coefficient-swap programming: 76 clock cycles (19 AXI4-Lite writes)
+latency frame1: first accepted input beat (cyc 13) to first output beat (cyc 179) = 166 cycles = 1.118 us at 148.5 MHz
 frame1 (Sobel): 0 mismatches / 19200 px
 frame2 (scharr): 0 mismatches / 19200 px
 throughput frame1: 19484 cycles first-in..last-out for 19200 px (1.0148 cyc/px); input stall cycles total 236
 throughput frame2: 19484 cycles first-in..last-out (1.0148 cyc/px)
 TB PASS: both frames bit-exact; tlast count = 240 (exp 240)
-$finish called at time : 390685 ns : File "<repo>/tb/tb_engine_ext.v" Line 248
+$finish called at time : 390685 ns : File "<repo>/tb/tb_engine_ext.v" Line 489
 exit
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:56:26 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:13:04 2026...

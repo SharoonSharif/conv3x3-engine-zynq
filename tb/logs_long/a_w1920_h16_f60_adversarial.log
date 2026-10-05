@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:42:08 2026
-# Process ID         : 55624
+# Start of session at: Mon Oct  5 11:09:51 2026
+# Process ID         : 27160
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_long/a_w1920_h16_f60_adversarial.log -mode tcl -source {xsim.dir/long1920x16/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_long/a_w1920_h16_f60_adversarial.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 10620 MB
+# Available Virtual  : 12060 MB
 #-----------------------------------------------------------
 source xsim.dir/long1920x16/xsim_script.tcl
 # xsim {long1920x16} -testplusarg VEC=tb/vectors_w1920_h16 -testplusarg FRAMES=60 -testplusarg ADVERSARIAL -autoloadwcfg -runall
@@ -150,8 +150,7 @@ cycles/frame: min 49798 max 56233 mean 53082.3; input stall cycles total 412566
 adversarial: 120 long tready stalls (lengths 1001..2000), longest tready-low stretch 2003 cycles (1992 with an output beat pending); SOF held until the engine was idle for 35 frames, back-to-back for 24; tready low in the accept cycle for 36 of 60 SOF beats and 60 of 60 first-EOL beats; 183 input gaps >= 500 cycles (longest 1499); 21 of 59 kernel writes finished while the output was stalled
 summary: 60 frames, 1843200 pixels checked, 0 mismatches, 59 kernel swaps, tlast count 960 (exp 960), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
 TB PASS: all 60 frames bit-exact (1843200 px, 59 kernel swaps)
-$finish called at time : 31485485 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
-run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:17 . Memory (MB): peak = 227.848 ; gain = 0.000
+$finish called at time : 31485485 ns : File "<repo>/tb/tb_engine_ext.v" Line 472
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:09 . Memory (MB): peak = 229.301 ; gain = 0.000
 exit
-INFO: xsimkernel Simulation Memory Usage: 20196 KB (Peak: 20196 KB), Simulation CPU Usage: 17171 ms
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:42:28 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:10:01 2026...

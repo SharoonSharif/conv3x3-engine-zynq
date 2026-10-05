@@ -3,8 +3,8 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Mon Oct  5 10:43:59 2026
-# Process ID         : 54976
+# Start of session at: Mon Oct  5 11:10:52 2026
+# Process ID         : 37988
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_long/c_w1920_h1080_f4_fullrate.log -mode tcl -source {xsim.dir/long1080p/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_long/c_w1920_h1080_f4_fullrate.log
@@ -19,7 +19,7 @@
 # Host memory        : 51299 MB
 # Swap memory        : 21481 MB
 # Total Virtual      : 72780 MB
-# Available Virtual  : 11082 MB
+# Available Virtual  : 12507 MB
 #-----------------------------------------------------------
 source xsim.dir/long1080p/xsim_script.tcl
 # xsim {long1080p} -testplusarg VEC=tb/vectors_w1920_h1080 -testplusarg FRAMES=4 -testplusarg FULLRATE -autoloadwcfg -runall
@@ -37,8 +37,8 @@ frame 4 (gaussian): 0 mismatches / 2073600 px, 2076604 cycles first-in..last-out
 cycles/frame: min 2076604 max 2076604 mean 2076604.0; input stall cycles total 10078
 summary: 4 frames, 8294400 pixels checked, 0 mismatches, 3 kernel swaps, tlast count 4320 (exp 4320), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
 TB PASS: all 4 frames bit-exact (8294400 px, 3 kernel swaps)
-$finish called at time : 83064525 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
-run: Time (s): cpu = 00:00:00 ; elapsed = 00:01:00 . Memory (MB): peak = 229.391 ; gain = 0.000
+$finish called at time : 83064525 ns : File "<repo>/tb/tb_engine_ext.v" Line 472
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:33 . Memory (MB): peak = 229.531 ; gain = 0.000
 exit
-INFO: xsimkernel Simulation Memory Usage: 46816 KB (Peak: 46816 KB), Simulation CPU Usage: 58156 ms
-INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:45:01 2026...
+INFO: xsimkernel Simulation Memory Usage: 46900 KB (Peak: 46900 KB), Simulation CPU Usage: 33046 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 11:11:27 2026...

@@ -31,7 +31,8 @@
   "sharpen": {
    "mode": 1,
    "k": 0,
-   "checksum": 6245237
+   "checksum": 3949268,
+   "signed": 1
   }
  }
 }
