@@ -2,14 +2,14 @@ cff-version: 1.2.0
 message: "If you use these artifacts, please cite them as below."
 title: "conv3x3-engine-zynq: runtime-programmable 3x3 convolution engine and fixed Sobel core for Zynq-7020 (reconstructed RTL, testbenches, golden model, Vivado reports)"
 type: software
-abstract: "Reconstructed Verilog RTL, testbenches, fixed-point golden model, and Vivado 2026.1 out-of-context scripts and reports (W = 160 and W = 1920) with a Vitis Vision filter2D baseline for a runtime-programmable 3x3 convolution engine and a fixed Sobel core on XC7Z020-1. BSDS500 fixed-point vs float64 evaluation included. No board-level runs."
+abstract: "Reconstructed Verilog RTL, testbenches (55 xsim runs, 32 M pixels, adversarial backpressure), fixed-point reference model, and Vivado 2026.1 out-of-context scripts and reports (W = 160, 1920 and 3840; distributed- and block-RAM line buffers) with Vitis Vision filter2D and Sobel baselines for a runtime-programmable 3x3 convolution engine and a fixed Sobel core on XC7Z020-1. BSDS500 fixed-point vs float64 evaluation with k/kernel sensitivity included. No board-level runs."
 authors:
   - family-names: Sharif
     given-names: Sharoon
     email: sharoon.sharif@bulldogs.aamu.edu
     affiliation: "Alabama A&M University"
 version: "1.2.0"
-date-released: 2026-09-30
+date-released: 2026-10-05
 doi: 10.5281/zenodo.23047577
 identifiers:
   - type: doi

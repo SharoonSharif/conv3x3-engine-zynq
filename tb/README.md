@@ -84,7 +84,7 @@ Protocol checks (TUSER on the first pixel only, TLAST on the last column) and
 
     tb\run_xsim_long.bat [all|a|b|c|d|e|f]    runs and results: tb/logs_long/README.md
 
-## Recorded results (xsim 2026.1, 2026-09-30): 25 runs, all TB PASS
+## Recorded results (xsim 2026.1, regenerated 2026-10-05): 55 runs, all TB PASS
 
 | Run | Result |
 |---|---|
