@@ -3,36 +3,37 @@
 # SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
 # IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
 # SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
-# Start of session at: Wed Sep 30 14:28:40 2026
-# Process ID         : 12408
+# Start of session at: Mon Oct  5 10:47:30 2026
+# Process ID         : 51036
 # Current directory  : <repo>
 # Command line       : xsim.exe -log tb/logs_ext/w160_sobel_enpause.log -mode tcl -source {xsim.dir/ext160/xsim_script.tcl}
 # Log file           : <repo>/tb/logs_ext/w160_sobel_enpause.log
 # Journal file       : <repo>\xsim.jou
 # Running On         : <redacted>
 # Platform           : Windows 11
-# Operating System   : 26200
+# Operating System   : 26300
 # Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
 # CPU Frequency      : 3194 MHz
 # CPU Physical cores : 12
 # CPU Logical cores  : 24
 # Host memory        : 51299 MB
-# Swap memory        : 25019 MB
-# Total Virtual      : 76318 MB
-# Available Virtual  : 2380 MB
+# Swap memory        : 21481 MB
+# Total Virtual      : 72780 MB
+# Available Virtual  : 10500 MB
 #-----------------------------------------------------------
 source xsim.dir/ext160/xsim_script.tcl
 # xsim {ext160} -testplusarg VEC=tb/vectors -testplusarg CASE=sharpen -testplusarg ENPAUSE -autoloadwcfg -runall
 Time resolution is 1 ps
 run -all
-config: W=160 H=120 CW=9 case=sharpen fullrate=0 midframe=0 enpause=1
+config: W=160 H=120 CW=9 case=sharpen fullrate=0 midframe=0 enpause=1 adversarial=0
 EN pause: input held for 300 cycles at pixel 4853, then resumed
 coefficient-swap programming: 76 clock cycles (19 AXI4-Lite writes)
+latency frame1: first accepted input beat (cyc 13) to first output beat (cyc 226) = 213 cycles = 1.434 us at 148.5 MHz
 frame1 (Sobel): 0 mismatches / 19200 px
 frame2 (sharpen): 0 mismatches / 19200 px
 throughput frame1: 28994 cycles first-in..last-out for 19200 px (1.5101 cyc/px); input stall cycles total 5481
 throughput frame2: 28457 cycles first-in..last-out (1.4821 cyc/px)
 TB PASS: both frames bit-exact; tlast count = 240 (exp 240)
-$finish called at time : 575525 ns : File "<repo>/tb/tb_engine_ext.v" Line 245
+$finish called at time : 575525 ns : File "<repo>/tb/tb_engine_ext.v" Line 486
 exit
-INFO: [Common 17-206] Exiting xsim at Wed Sep 30 14:28:43 2026...
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:47:33 2026...

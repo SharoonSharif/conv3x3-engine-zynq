@@ -1,0 +1,157 @@
+#-----------------------------------------------------------
+# xsim v2026.1 (64-bit)
+# SW Build 6511674 on Tue Jun 16 11:02:23 MDT 2026
+# IP Build 6504888 on Tue Jun 09 09:05:25 MDT 2026
+# SharedData Build 6501428 on Mon Jun 08 17:34:18 MDT 2026
+# Start of session at: Mon Oct  5 10:42:08 2026
+# Process ID         : 55624
+# Current directory  : <repo>
+# Command line       : xsim.exe -log tb/logs_long/a_w1920_h16_f60_adversarial.log -mode tcl -source {xsim.dir/long1920x16/xsim_script.tcl}
+# Log file           : <repo>/tb/logs_long/a_w1920_h16_f60_adversarial.log
+# Journal file       : <repo>\xsim.jou
+# Running On         : <redacted>
+# Platform           : Windows 11
+# Operating System   : 26300
+# Processor Detail   : AMD RYZEN AI MAX PRO 390 w/ Radeon 8050S       
+# CPU Frequency      : 3194 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 51299 MB
+# Swap memory        : 21481 MB
+# Total Virtual      : 72780 MB
+# Available Virtual  : 10620 MB
+#-----------------------------------------------------------
+source xsim.dir/long1920x16/xsim_script.tcl
+# xsim {long1920x16} -testplusarg VEC=tb/vectors_w1920_h16 -testplusarg FRAMES=60 -testplusarg ADVERSARIAL -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+config: W=1920 H=16 CW=11 frames=60 fullrate=0 adversarial=1 noswap=0 (long-run mode, 6 expected images loaded)
+swap 1: scharr for frame 2 written during frame 1 at input row 10 (76 cycles, 19 writes, output stalled)
+swap 2: prewitt for frame 3 written during frame 2 at input row 4 (76 cycles, 19 writes)
+swap 3: gaussian for frame 4 written during frame 3 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 4: laplacian for frame 5 written during frame 4 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 5: sharpen for frame 6 written during frame 5 at input row 15 (76 cycles, 19 writes)
+swap 6: sobel for frame 7 written during frame 6 at input row 3 (76 cycles, 19 writes)
+swap 7: scharr for frame 8 written during frame 7 at input row 7 (76 cycles, 19 writes)
+swap 8: prewitt for frame 9 written during frame 8 at input row 15 (76 cycles, 19 writes, output stalled)
+swap 9: gaussian for frame 10 written during frame 9 at input row 15 (76 cycles, 19 writes)
+swap 10: laplacian for frame 11 written during frame 10 at input row 14 (76 cycles, 19 writes)
+swap 11: sharpen for frame 12 written during frame 11 at input row 12 (76 cycles, 19 writes, output stalled)
+swap 12: sobel for frame 13 written during frame 12 at input row 15 (76 cycles, 19 writes)
+swap 13: scharr for frame 14 written during frame 13 at input row 2 (76 cycles, 19 writes)
+swap 14: prewitt for frame 15 written during frame 14 at input row 4 (76 cycles, 19 writes)
+swap 15: gaussian for frame 16 written during frame 15 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 16: laplacian for frame 17 written during frame 16 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 17: sharpen for frame 18 written during frame 17 at input row 15 (76 cycles, 19 writes)
+swap 18: sobel for frame 19 written during frame 18 at input row 2 (76 cycles, 19 writes)
+swap 19: scharr for frame 20 written during frame 19 at input row 5 (76 cycles, 19 writes, output stalled)
+swap 20: prewitt for frame 21 written during frame 20 at input row 11 (76 cycles, 19 writes)
+swap 21: gaussian for frame 22 written during frame 21 at input row 7 (76 cycles, 19 writes)
+swap 22: laplacian for frame 23 written during frame 22 at input row 15 (76 cycles, 19 writes)
+swap 23: sharpen for frame 24 written during frame 23 at input row 15 (76 cycles, 19 writes)
+swap 24: sobel for frame 25 written during frame 24 at input row 15 (76 cycles, 19 writes, output stalled)
+swap 25: scharr for frame 26 written during frame 25 at input row 14 (76 cycles, 19 writes)
+swap 26: prewitt for frame 27 written during frame 26 at input row 13 (76 cycles, 19 writes)
+swap 27: gaussian for frame 28 written during frame 27 at input row 10 (76 cycles, 19 writes)
+swap 28: laplacian for frame 29 written during frame 28 at input row 4 (76 cycles, 19 writes)
+swap 29: sharpen for frame 30 written during frame 29 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 30: sobel for frame 31 written during frame 30 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 31: scharr for frame 32 written during frame 31 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 32: prewitt for frame 33 written during frame 32 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 33: gaussian for frame 34 written during frame 33 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 34: laplacian for frame 35 written during frame 34 at input row 15 (76 cycles, 19 writes)
+swap 35: sharpen for frame 36 written during frame 35 at input row 2 (76 cycles, 19 writes)
+swap 36: sobel for frame 37 written during frame 36 at input row 5 (76 cycles, 19 writes)
+swap 37: scharr for frame 38 written during frame 37 at input row 10 (76 cycles, 19 writes)
+swap 38: prewitt for frame 39 written during frame 38 at input row 4 (76 cycles, 19 writes, output stalled)
+swap 39: gaussian for frame 40 written during frame 39 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 40: laplacian for frame 41 written during frame 40 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 41: sharpen for frame 42 written during frame 41 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 42: sobel for frame 43 written during frame 42 at input row 15 (76 cycles, 19 writes)
+swap 43: scharr for frame 44 written during frame 43 at input row 2 (76 cycles, 19 writes)
+swap 44: prewitt for frame 45 written during frame 44 at input row 4 (76 cycles, 19 writes)
+swap 45: gaussian for frame 46 written during frame 45 at input row 15 (76 cycles, 19 writes)
+swap 46: laplacian for frame 47 written during frame 46 at input row 2 (76 cycles, 19 writes)
+swap 47: sharpen for frame 48 written during frame 47 at input row 4 (76 cycles, 19 writes)
+swap 48: sobel for frame 49 written during frame 48 at input row 15 (76 cycles, 19 writes)
+swap 49: scharr for frame 50 written during frame 49 at input row 3 (76 cycles, 19 writes, output stalled)
+swap 50: prewitt for frame 51 written during frame 50 at input row 6 (76 cycles, 19 writes)
+swap 51: gaussian for frame 52 written during frame 51 at input row 12 (76 cycles, 19 writes)
+swap 52: laplacian for frame 53 written during frame 52 at input row 15 (76 cycles, 19 writes)
+swap 53: sharpen for frame 54 written during frame 53 at input row 3 (76 cycles, 19 writes)
+swap 54: sobel for frame 55 written during frame 54 at input row 6 (76 cycles, 19 writes)
+swap 55: scharr for frame 56 written during frame 55 at input row 13 (76 cycles, 19 writes)
+swap 56: prewitt for frame 57 written during frame 56 at input row 10 (76 cycles, 19 writes)
+swap 57: gaussian for frame 58 written during frame 57 at input row 4 (76 cycles, 19 writes)
+swap 58: laplacian for frame 59 written during frame 58 at input row 0 (76 cycles, 19 writes, output stalled)
+swap 59: sharpen for frame 60 written during frame 59 at input row 0 (76 cycles, 19 writes, output stalled)
+latency frame1: first accepted input beat (cyc 13) to first output beat (cyc 5135) = 5122 cycles = 34.492 us at 148.5 MHz
+frame 1 (sobel): 0 mismatches / 30720 px, 52294 cycles first-in..last-out (1.7023 cyc/px)
+frame 2 (scharr): 0 mismatches / 30720 px, 53657 cycles first-in..last-out (1.7466 cyc/px)
+frame 3 (prewitt): 0 mismatches / 30720 px, 54853 cycles first-in..last-out (1.7856 cyc/px)
+frame 4 (gaussian): 0 mismatches / 30720 px, 54257 cycles first-in..last-out (1.7662 cyc/px)
+frame 5 (laplacian): 0 mismatches / 30720 px, 52539 cycles first-in..last-out (1.7103 cyc/px)
+frame 6 (sharpen): 0 mismatches / 30720 px, 55694 cycles first-in..last-out (1.8130 cyc/px)
+frame 7 (sobel): 0 mismatches / 30720 px, 54928 cycles first-in..last-out (1.7880 cyc/px)
+frame 8 (scharr): 0 mismatches / 30720 px, 54049 cycles first-in..last-out (1.7594 cyc/px)
+frame 9 (prewitt): 0 mismatches / 30720 px, 53548 cycles first-in..last-out (1.7431 cyc/px)
+frame 10 (gaussian): 0 mismatches / 30720 px, 53596 cycles first-in..last-out (1.7447 cyc/px)
+frame 11 (laplacian): 0 mismatches / 30720 px, 52346 cycles first-in..last-out (1.7040 cyc/px)
+frame 12 (sharpen): 0 mismatches / 30720 px, 50329 cycles first-in..last-out (1.6383 cyc/px)
+frame 13 (sobel): 0 mismatches / 30720 px, 52864 cycles first-in..last-out (1.7208 cyc/px)
+frame 14 (scharr): 0 mismatches / 30720 px, 54708 cycles first-in..last-out (1.7809 cyc/px)
+frame 15 (prewitt): 0 mismatches / 30720 px, 51474 cycles first-in..last-out (1.6756 cyc/px)
+frame 16 (gaussian): 0 mismatches / 30720 px, 52513 cycles first-in..last-out (1.7094 cyc/px)
+frame 17 (laplacian): 0 mismatches / 30720 px, 51584 cycles first-in..last-out (1.6792 cyc/px)
+frame 18 (sharpen): 0 mismatches / 30720 px, 53980 cycles first-in..last-out (1.7572 cyc/px)
+frame 19 (sobel): 0 mismatches / 30720 px, 56233 cycles first-in..last-out (1.8305 cyc/px)
+frame 20 (scharr): 0 mismatches / 30720 px, 54865 cycles first-in..last-out (1.7860 cyc/px)
+frame 21 (prewitt): 0 mismatches / 30720 px, 53162 cycles first-in..last-out (1.7305 cyc/px)
+frame 22 (gaussian): 0 mismatches / 30720 px, 55702 cycles first-in..last-out (1.8132 cyc/px)
+frame 23 (laplacian): 0 mismatches / 30720 px, 52960 cycles first-in..last-out (1.7240 cyc/px)
+frame 24 (sharpen): 0 mismatches / 30720 px, 51934 cycles first-in..last-out (1.6906 cyc/px)
+frame 25 (sobel): 0 mismatches / 30720 px, 53028 cycles first-in..last-out (1.7262 cyc/px)
+frame 26 (scharr): 0 mismatches / 30720 px, 51460 cycles first-in..last-out (1.6751 cyc/px)
+frame 27 (prewitt): 0 mismatches / 30720 px, 52236 cycles first-in..last-out (1.7004 cyc/px)
+frame 28 (gaussian): 0 mismatches / 30720 px, 54628 cycles first-in..last-out (1.7783 cyc/px)
+frame 29 (laplacian): 0 mismatches / 30720 px, 52222 cycles first-in..last-out (1.6999 cyc/px)
+frame 30 (sharpen): 0 mismatches / 30720 px, 51863 cycles first-in..last-out (1.6882 cyc/px)
+frame 31 (sobel): 0 mismatches / 30720 px, 54498 cycles first-in..last-out (1.7740 cyc/px)
+frame 32 (scharr): 0 mismatches / 30720 px, 53779 cycles first-in..last-out (1.7506 cyc/px)
+frame 33 (prewitt): 0 mismatches / 30720 px, 53623 cycles first-in..last-out (1.7455 cyc/px)
+frame 34 (gaussian): 0 mismatches / 30720 px, 53790 cycles first-in..last-out (1.7510 cyc/px)
+frame 35 (laplacian): 0 mismatches / 30720 px, 53184 cycles first-in..last-out (1.7312 cyc/px)
+frame 36 (sharpen): 0 mismatches / 30720 px, 52953 cycles first-in..last-out (1.7237 cyc/px)
+frame 37 (sobel): 0 mismatches / 30720 px, 53859 cycles first-in..last-out (1.7532 cyc/px)
+frame 38 (scharr): 0 mismatches / 30720 px, 49798 cycles first-in..last-out (1.6210 cyc/px)
+frame 39 (prewitt): 0 mismatches / 30720 px, 52279 cycles first-in..last-out (1.7018 cyc/px)
+frame 40 (gaussian): 0 mismatches / 30720 px, 54160 cycles first-in..last-out (1.7630 cyc/px)
+frame 41 (laplacian): 0 mismatches / 30720 px, 53740 cycles first-in..last-out (1.7493 cyc/px)
+frame 42 (sharpen): 0 mismatches / 30720 px, 53831 cycles first-in..last-out (1.7523 cyc/px)
+frame 43 (sobel): 0 mismatches / 30720 px, 52292 cycles first-in..last-out (1.7022 cyc/px)
+frame 44 (scharr): 0 mismatches / 30720 px, 52332 cycles first-in..last-out (1.7035 cyc/px)
+frame 45 (prewitt): 0 mismatches / 30720 px, 54262 cycles first-in..last-out (1.7663 cyc/px)
+frame 46 (gaussian): 0 mismatches / 30720 px, 51241 cycles first-in..last-out (1.6680 cyc/px)
+frame 47 (laplacian): 0 mismatches / 30720 px, 53212 cycles first-in..last-out (1.7322 cyc/px)
+frame 48 (sharpen): 0 mismatches / 30720 px, 53798 cycles first-in..last-out (1.7512 cyc/px)
+frame 49 (sobel): 0 mismatches / 30720 px, 52653 cycles first-in..last-out (1.7140 cyc/px)
+frame 50 (scharr): 0 mismatches / 30720 px, 51126 cycles first-in..last-out (1.6643 cyc/px)
+frame 51 (prewitt): 0 mismatches / 30720 px, 54123 cycles first-in..last-out (1.7618 cyc/px)
+frame 52 (gaussian): 0 mismatches / 30720 px, 52855 cycles first-in..last-out (1.7205 cyc/px)
+frame 53 (laplacian): 0 mismatches / 30720 px, 52752 cycles first-in..last-out (1.7172 cyc/px)
+frame 54 (sharpen): 0 mismatches / 30720 px, 51484 cycles first-in..last-out (1.6759 cyc/px)
+frame 55 (sobel): 0 mismatches / 30720 px, 54889 cycles first-in..last-out (1.7868 cyc/px)
+frame 56 (scharr): 0 mismatches / 30720 px, 52549 cycles first-in..last-out (1.7106 cyc/px)
+frame 57 (prewitt): 0 mismatches / 30720 px, 52599 cycles first-in..last-out (1.7122 cyc/px)
+frame 58 (gaussian): 0 mismatches / 30720 px, 51830 cycles first-in..last-out (1.6872 cyc/px)
+frame 59 (laplacian): 0 mismatches / 30720 px, 50977 cycles first-in..last-out (1.6594 cyc/px)
+frame 60 (sharpen): 0 mismatches / 30720 px, 50962 cycles first-in..last-out (1.6589 cyc/px)
+cycles/frame: min 49798 max 56233 mean 53082.3; input stall cycles total 412566
+adversarial: 120 long tready stalls (lengths 1001..2000), longest tready-low stretch 2003 cycles (1992 with an output beat pending); SOF held until the engine was idle for 35 frames, back-to-back for 24; tready low in the accept cycle for 36 of 60 SOF beats and 60 of 60 first-EOL beats; 183 input gaps >= 500 cycles (longest 1499); 21 of 59 kernel writes finished while the output was stalled
+summary: 60 frames, 1843200 pixels checked, 0 mismatches, 59 kernel swaps, tlast count 960 (exp 960), 0 TUSER errors, 0 TLAST errors, 0 extra beats, 0 register errors
+TB PASS: all 60 frames bit-exact (1843200 px, 59 kernel swaps)
+$finish called at time : 31485485 ns : File "<repo>/tb/tb_engine_ext.v" Line 469
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:00:17 . Memory (MB): peak = 227.848 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 20196 KB (Peak: 20196 KB), Simulation CPU Usage: 17171 ms
+INFO: [Common 17-206] Exiting xsim at Mon Oct  5 10:42:28 2026...
