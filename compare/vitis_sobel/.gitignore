@@ -1,0 +1,13 @@
+hls_prj/
+*.log
+*.jou
+*.dat
+console_*.txt
+hls_console.txt
+csim_console.txt
+.Xil/
+clockInfo.txt
+csim.exe
+csim
+/*.rpt
+numbers.json
